@@ -128,7 +128,7 @@ app.post('/videos', (req:RequestWithBody<{                                      
         res.status(201).send(newVideo)
 })
 
-app.delete('/videos', (req: Request, res: Response) => {        //Запрос на удаление всех видео
+app.delete('/testing/all-data', (req: Request, res: Response) => {        //Запрос на удаление всех видео
     videoDb.length = 0
     res.sendStatus(204)
     return

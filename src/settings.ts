@@ -139,10 +139,10 @@ app.delete('/videos/:id',  (req: RequestWithParams<{id: number}>, res: Response)
         let i= videoDb.findIndex(video => video.id === id)
         console.log(i)
         if(i==-1){
-            res.send(204)
+            res.send(404)
             }else{
         videoDb.splice(i, 1)
-        res.sendStatus(404)
+        res.sendStatus(204)
         return;
     }
     })

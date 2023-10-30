@@ -168,7 +168,7 @@ app.put('/videos/:id', (req: RequestWithParamsBody<{id: number}, {
         const {title, author, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate} = req.body
         
         
-        if (!title || !title.trim() || title.length > 40) {
+        if (!title || !title.trim() || title.length > 40 || typeof title !== 'string' ) {
             errors.errorsMessages.push({message: 'Incorrect title', field: 'title'})
         }
 

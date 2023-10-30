@@ -210,7 +210,8 @@ app.put('/videos/:id', (req: RequestWithParamsBody<{id: number}, {
         } 
 
         if (errors.errorsMessages.length){
-            res.sendStatus(400).send(errors)
+            console.log(errors)
+            res.status(400).send(errors)
         } else {
             
             video.availableResolutions = availableResolutions;
@@ -220,9 +221,9 @@ app.put('/videos/:id', (req: RequestWithParamsBody<{id: number}, {
             video.title = title;
             video.author = author;
 
-            res.status(204).send()
+            res.sendStatus(204)
         }
     } else { 
-        res.send(404)
+        res.sendStatus(404)
     }
 })

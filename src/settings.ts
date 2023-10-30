@@ -188,8 +188,8 @@ app.put('/videos/:id', (req: RequestWithParamsBody<{id: number}, {
 
         if (typeof canBeDownloaded !== 'undefined' && typeof canBeDownloaded !== 'boolean'){               //&&
             errors.errorsMessages.push({
-                message: 'Incorrect canBeDownLoaded', 
-                field: 'canBeDownLoaded' 
+                message: 'Incorrect canBeDownloaded', 
+                field: 'canBeDownloaded' 
             })
             
         }

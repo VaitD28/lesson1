@@ -71,8 +71,6 @@ app.get('/videos/:id',  (req: RequestWithParams<{id: number}>, res: Response) =>
     res.status(200).send(video)
 })
 
-
-
 app.post('/videos', (req:RequestWithBody<{                                                  //Запрос на отправку данных Body
         title: "string", 
         author: "string", 
@@ -128,7 +126,7 @@ app.post('/videos', (req:RequestWithBody<{                                      
         res.status(201).send(newVideo)
 })
 
-app.delete('/testing/all-data', (req: Request, res: Response) => {        //Запрос на удаление всех видео
+app.delete('/videos', (req: Request, res: Response) => {        //Запрос на удаление всех видео
     videoDb.length = 0
     res.sendStatus(204)
     return
@@ -226,4 +224,11 @@ app.put('/videos/:id', (req: RequestWithParamsBody<{id: number}, {
     } else { 
         res.sendStatus(404)
     }
+})
+
+
+app.delete('/__test__/data', (req: Request, res: Response) => {        //Запрос на удаление всех видео
+    videoDb.length = 0
+    res.sendStatus(204)
+    return
 })

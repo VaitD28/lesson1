@@ -14,12 +14,12 @@ export const blogPostValidation = [
     .isLength({min:1,max:500})
     .withMessage('Incorrect description!'),
     
-    body('websiteURL')
+    body('websiteUrl')
     .isString()
     .trim()
     .isLength({min:1,max:100})
     .matches('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$')
-    .withMessage('Incorrect websiteURL!'),
+    .withMessage('Incorrect websiteUrl!'),
     
     inputModelValidation
 ] 

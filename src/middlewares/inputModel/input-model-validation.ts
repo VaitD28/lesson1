@@ -2,6 +2,7 @@
 import {Request, Response, NextFunction } from "express";
 import { ValidationError, validationResult } from "express-validator";
 import { errorHandler } from "../../errorHandling/errorHandler";
+import { HTTP_STATUSES } from "../../statuses";
 
 export const inputModelValidation = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
@@ -28,7 +29,7 @@ export const inputModelValidation = (req: Request, res: Response, next: NextFunc
     // return next()
     if (!errors.isEmpty()) {
         const errorMessages = errors.array({onlyFirstError: true}).map(error => errorHandler(error));
-        res.status(400).json({errorMessages});
+        res.status(HTTP_STATUSES.BAD_REQUEST_400).json({errorMessages});
     }else {
         next()
     }

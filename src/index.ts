@@ -6,3 +6,12 @@ app.listen(port, ()  => {
     console.log(`App starter on ${port} port`)
     
 })
+
+export type ErrorsMessages = {
+    message: string;
+    field: string;
+};
+
+export type ErrorType = {                                      
+    errorsMessages: ErrorsMessages[]
+}

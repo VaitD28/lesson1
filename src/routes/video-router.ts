@@ -1,8 +1,9 @@
 import { Router, Response, Request } from 'express'
 import { AvailableResolutions, VideoType } from '../types/video/output'
-import { RequestWithParams, RequestWithBody, ErrorType, RequestWithParamsBody } from '../types/types'
+import { RequestWithParams, RequestWithBody, RequestWithParamsBody } from '../types/types'
 import { CreateVideoDto, UpdateVideoDto } from '../types/video/input'
 import { videoDb } from '../db/VideoDb'
+import { ErrorType } from '..'
 
 
 export const videoRoute = Router({})

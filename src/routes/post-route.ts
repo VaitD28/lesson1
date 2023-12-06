@@ -11,6 +11,7 @@ import { QueryParamsPostModel } from '../features/posts/models/inputPostsModel/Q
 import { URIParamsPostModel } from '../features/posts/models/inputPostsModel/URIParamsPostModel'
 import { PostUpdateModel } from '../features/posts/models/inputPostsModel/PostUpdateModel'
 import { GetPostViewModel } from '../features/posts/models/outputPostsModel/GetPostViewModel'
+import { HTTP_STATUSES } from '../statuses'
 
 
 export const postRoute = Router({})
@@ -25,7 +26,7 @@ postRoute.get('/:id', (req: RequestWithParams<URIParamsPostModel>, res: Response
     const post = postRepository.getPostById(id)
 
     if (!post){
-        res.sendStatus(404)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     }
     res.send(post)
 })
@@ -34,9 +35,9 @@ postRoute.post('/', authMiddleware, postPostValidation, (req: RequestWithBody<Po
     let {title, shortDescription, content, blogId} = req.body
     const newPost = postRepository.createPost(title, shortDescription, content, blogId)
     if (!newPost){
-        res.sendStatus(404)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     }
-    res.status(201).send(GetPostViewModel(newPost))
+    res.status(HTTP_STATUSES.CREATED_201).send(GetPostViewModel(newPost))
 })
 
 postRoute.put('/id', authMiddleware, postPostValidation, (req: RequestWithParamsBody<URIParamsPostModel, PostUpdateModel>, res: Response) =>{
@@ -44,10 +45,10 @@ postRoute.put('/id', authMiddleware, postPostValidation, (req: RequestWithParams
     const id = req.params.id
     const updatePost = postRepository .updatePostById(id, {title, shortDescription, content, blogId})
     if(!updatePost){
-        res.sendStatus(404)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-    res.sendStatus(204)
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
 postRoute.delete('/:id',authMiddleware, (req: RequestWithParams<URIParamsPostModel>, res: Response) => {
@@ -55,10 +56,10 @@ postRoute.delete('/:id',authMiddleware, (req: RequestWithParams<URIParamsPostMod
     let post = postRepository.deletePostById(id)
     
     if (!post) {
-        res.sendStatus(404)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-        res.sendStatus(204)
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
 

@@ -53,7 +53,7 @@ export const BlogRepository = {
 
     blogDb.splice(blog, 1)
     
-        return blog
+        return 
     }  
 
 }

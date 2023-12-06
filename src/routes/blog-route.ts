@@ -26,7 +26,8 @@ blogRoute.get('/:id', (req: RequestWithParams<URIParamsBlogsModel>, res: Respons
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-    res.send(GetBlogViewModel(foundBlog));
+        res.send(GetBlogViewModel(foundBlog));
+    
 }
 );
 
@@ -39,7 +40,7 @@ blogRoute.post('/', authMiddleware, blogPostValidation,  (req: RequestWithBody<B
     if (!newBlog){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     }
-    res.sendStatus(HTTP_STATUSES.CREATED_201).send(GetBlogViewModel(newBlog))
+    res.status(HTTP_STATUSES.CREATED_201).send(GetBlogViewModel(newBlog))
 })
 
 blogRoute.put('/:id', authMiddleware, blogPostValidation,  (req: RequestWithParamsBody<URIParamsBlogsModel, BlogUpdateModel>, res: Response)  => {

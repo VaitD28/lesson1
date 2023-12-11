@@ -49,11 +49,11 @@ export const BlogRepository = {
         return null
     }
 
-    return true
+    
 
     blogDb.splice(blog, 1)
     
-        return 
+    return true 
     }  
 
 }

@@ -28,8 +28,8 @@ export const inputModelValidation = (req: Request, res: Response, next: NextFunc
     
     // return next()
     if (!errors.isEmpty()) {
-        const errorMessages = errors.array({onlyFirstError: true}).map(error => errorHandler(error));
-        res.status(HTTP_STATUSES.BAD_REQUEST_400).json({errorMessages});
+        const errorsMessages = errors.array({onlyFirstError: true}).map(error => errorHandler(error));
+        res.status(HTTP_STATUSES.BAD_REQUEST_400).json({errorsMessages});
     }else {
         next()
     }

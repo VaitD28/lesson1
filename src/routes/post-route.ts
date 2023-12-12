@@ -16,12 +16,12 @@ import { HTTP_STATUSES } from '../statuses'
 
 export const postRoute = Router({})
 
-postRoute.get('/', (req: Request, res: Response) => {
+postRoute.get('/', (req: Request, res: Response<PostViewModel[]>) => {
     const posts = postRepository.getAllPost()
     res.send(posts)
 })
 
-postRoute.get('/:id', (req: RequestWithParams<URIParamsPostModel>, res: Response) => {
+postRoute.get('/:id', (req: RequestWithParams<URIParamsPostModel>, res: Response<PostViewModel>) => {
     const foundPost = postRepository.getPostById(req.params.id)
     if (!foundPost){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

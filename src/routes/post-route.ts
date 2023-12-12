@@ -39,7 +39,7 @@ postRoute.post('/', authMiddleware, postPostValidation, (req: RequestWithBody<Po
     res.status(HTTP_STATUSES.CREATED_201).send(GetPostViewModel(newPost))
 })
 
-postRoute.put('/id', authMiddleware, postPostValidation, (req: RequestWithParamsBody<URIParamsPostModel, PostUpdateModel>, res: Response) =>{
+postRoute.put('/:id', authMiddleware, postPostValidation, (req: RequestWithParamsBody<URIParamsPostModel, PostUpdateModel>, res: Response) =>{
     let {title, shortDescription, content, blogId} = req.body
     const id = req.params.id
     const updatePost = postRepository.updatePostById(id, {title, shortDescription, content, blogId})

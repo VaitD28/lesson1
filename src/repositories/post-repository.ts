@@ -18,7 +18,7 @@ export const postRepository = {
         
         const blog = BlogRepository.getBlogById(blogId)
         const newPost = {
-            id: (+Date()).toString(),
+            id: (+new Date()).toString(),
             title,
             shortDescription,
             content,

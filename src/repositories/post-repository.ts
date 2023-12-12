@@ -50,11 +50,11 @@ export const postRepository = {
     deletePostById(id:string) {
         let post= postDb.findIndex(p => p.id === id)
 
-        if (post == -1){
+        if (post==-1){
             return null
         }
 
-        blogDb.splice(post, 1)
+        postDb.splice(post, 1)
 
         return true
     }

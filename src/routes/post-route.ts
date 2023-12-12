@@ -22,13 +22,12 @@ postRoute.get('/', (req: Request, res: Response) => {
 })
 
 postRoute.get('/:id', (req: RequestWithParams<URIParamsPostModel>, res: Response) => {
-    const id = req.params.id
-    const post = postRepository.getPostById(id)
-
-    if (!post){
+    const foundPost = postRepository.getPostById(req.params.id)
+    if (!foundPost){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
     }
-    res.send(post)
+    res.send(GetPostViewModel(foundPost))
 })
 
 postRoute.post('/', authMiddleware, postPostValidation, (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel>) => {

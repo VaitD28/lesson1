@@ -42,7 +42,7 @@ postRoute.post('/', authMiddleware, postPostValidation, (req: RequestWithBody<Po
 postRoute.put('/id', authMiddleware, postPostValidation, (req: RequestWithParamsBody<URIParamsPostModel, PostUpdateModel>, res: Response) =>{
     let {title, shortDescription, content, blogId} = req.body
     const id = req.params.id
-    const updatePost = postRepository .updatePostById(id, {title, shortDescription, content, blogId})
+    const updatePost = postRepository.updatePostById(id, {title, shortDescription, content, blogId})
     if(!updatePost){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return

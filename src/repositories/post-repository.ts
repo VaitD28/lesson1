@@ -33,7 +33,7 @@ export const postRepository = {
 
     // updatePostById(id: string, title: string, shortDescription: string, content: string, blogId: string) {
         updatePostById(postId: string, updateData: PostUpdateModel) {
-        let post = postDb.find((post: PostType)=> post.id === postId)
+        const post = postDb.find((post: PostType)=> post.id === postId)
         if (!post){
             return false
         }else{

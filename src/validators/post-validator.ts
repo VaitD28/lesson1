@@ -32,9 +32,9 @@ export const postPostValidation = [
     .notEmpty()
     .withMessage('Incorrect blogId! BlogId should be some information')
     .custom(id => {
-        const foundBlogID = blogDb.find(blog => blog.id === id)
+        const foundBlogID = BlogRepository.getBlogById(id)
     if (!foundBlogID){
-        throw new Error ('blog not found')
+        return false
     }else{
         return true
     }

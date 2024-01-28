@@ -1,7 +1,6 @@
 import { body } from "express-validator";
 import { inputModelValidation } from "../middlewares/inputModel/input-model-validation";
 import { BlogRepository } from "../repositories/blog-repository";
-import { blogDb } from "../db/BlogsDb";
 
 export const postPostValidation = [
     body('title')
@@ -31,8 +30,8 @@ export const postPostValidation = [
     .trim()
     .notEmpty()
     .withMessage('Incorrect blogId! BlogId should be some information')
-    .custom(id => {
-        const foundBlogID = BlogRepository.getBlogById(id)
+    .custom(async id => {
+        const foundBlogID = await BlogRepository.getBlogById(id)
     if (!foundBlogID){
         return false
     }else{

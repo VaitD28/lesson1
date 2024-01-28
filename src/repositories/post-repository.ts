@@ -1,62 +1,78 @@
-import { BlogType, blogDb } from "../db/BlogsDb"
-import { PostType, postDb } from "../db/PostsDb"
-
+import { postDb } from "../db/PostsDb"
+import { PostUpdateModel } from "../models/posts/inputPostsModel/PostUpdateModel"
+import { OutputPostType } from "../output/post.output.model"
+import { blogsCollection, postsCollection } from "../db/db"
+import { postMapper } from "../mappers/postMapper"
+import { PostCreateModel } from "../models/posts/inputPostsModel/PostCreateModel"
 import { BlogRepository } from "./blog-repository"
-import { PostUpdateModel } from "../features/posts/models/inputPostsModel/PostUpdateModel"
-import { GetPostViewModel } from "../features/posts/models/outputPostsModel/GetPostViewModel"
+import { PostDb } from "../post/post-db"
+import { ObjectId } from "mongodb"
 
-export const postRepository = {
-    getAllPost() {
-        return postDb.map(GetPostViewModel)
-    },
+export const PostRepository = {
+    async getAllPost(): Promise<OutputPostType[]| boolean> {
+        try{
+            const posts = await postsCollection.find({}).toArray()
 
-    getPostById(id:string) {
-        return postDb.find((post: PostType) => post.id === id)
-    },
-
-    createPost(title:string, shortDescription:string, content:string, blogId:string): PostType {
+            return posts.map(postMapper)
+            }
+            catch(e){
+                return false
+            }
         
-        const blog = BlogRepository.getBlogById(blogId)
-        const newPost = {
-            id: (+new Date()).toString(),
-            title,
-            shortDescription,
-            content,
-            blogId,
-            blogName: blog!.name
-        }
-
-        postDb.push(newPost)
-
-        return newPost
     },
 
-    // updatePostById(id: string, title: string, shortDescription: string, content: string, blogId: string) {
-        updatePostById(postId: string, updateData: PostUpdateModel) {
-        const post = postRepository.getPostById(postId)
-        if (!post){
-            return false
+    async getPostById(id:string): Promise<OutputPostType | null> {
+        try{
+            const post =await postsCollection.findOne({_id : new ObjectId(id)})
+        
+            if (!post){
+                return null
+            }
+
+        return postMapper(post)
+    }catch(e){
+        return null
+    }
+    },
+
+    async createPost(data: PostCreateModel) {
+        const createdAt = new Date()
+        const blog = await BlogRepository.getBlogById(data.blogId)
+        if (blog){
+            const newPost: PostDb = {
+                ...data,
+                blogName: blog.name,
+                createdAt: createdAt.toISOString()
+            }
+            const result = await postsCollection.insertOne(newPost)
+            return result.insertedId.toString()
         }else{
-        post.title = updateData.title,
-        post.shortDescription = updateData.shortDescription,
-        post.content = updateData.content,
-        post.blogId = updateData.blogId
-
-        return true
-        }
-
-    },
-
-    deletePostById(id:string) {
-        let post= postDb.findIndex(p => p.id === id)
-
-        if (post==-1){
             return null
         }
 
-        postDb.splice(post, 1)
 
-        return true
+    },
+
+    async updatePost(id: string, updateData: PostUpdateModel): Promise<boolean> {
+
+        const res = await postsCollection.updateOne({_id : new ObjectId(id)}, {
+            $set:{
+                title: updateData.title,
+                shortDescription: updateData.shortDescription,
+                content: updateData.content,
+                blogId: updateData.blogId
+            }
+        })
+
+        return !!res.matchedCount
+
+    },
+
+    async deletePostById(id:string): Promise<boolean> {
+        const res= await postsCollection.deleteOne({_id: new ObjectId(id)})
+
+        
+        return !!res.deletedCount
     }
 
 }

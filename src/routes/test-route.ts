@@ -1,11 +1,13 @@
 import { Router, Response, Request } from "express";
-import { blogDb } from "../db/BlogsDb";
-import { postDb } from "../db/PostsDb";
+
+import { blogsCollection, postsCollection } from "../db/db";
 
 export const testRoute = Router({})
 
-testRoute.delete('/', (req: Request, res: Response) => {
-    blogDb.length = 0
-    postDb.length = 0
+testRoute.delete('/', async (req: Request, res: Response<{}>) => {
+
+    await blogsCollection.deleteMany({})
+    await postsCollection.deleteMany({})
+
     res.status(204).send("All data is deleted")
 })

@@ -3,7 +3,7 @@ import { AvailableResolutions, VideoType } from '../types/video/output'
 import { RequestWithParams, RequestWithBody, RequestWithParamsBody } from '../types/types'
 import { CreateVideoDto, UpdateVideoDto } from '../types/video/input'
 import { videoDb } from '../db/VideoDb'
-import { ErrorType } from '..'
+import {ErrorType}
 
 
 export const videoRoute = Router({})

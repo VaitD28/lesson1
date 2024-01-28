@@ -1,17 +1,16 @@
+import {port, runDb } from './db/db';
 import {app} from './settings';
 
-const port =  process.env.PORT ?? 4444
-
-app.listen(port, ()  => {
-    console.log(`App starter on ${port} port`)
+app.listen(port, async()  => {
+    await runDb()
     
 })
 
-export type ErrorsMessages = {
-    message: string;
-    field: string;
-};
+// export type ErrorsMessages = {
+//     message: string;
+//     field: string;
+// };
 
-export type ErrorType = {                                      
-    errorsMessages: ErrorsMessages[]
-}
+// export type ErrorType = {                                      
+//     errorsMessages: ErrorsMessages[]
+// }

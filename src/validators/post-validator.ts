@@ -33,11 +33,11 @@ export const postPostValidation = [
     .custom(async id => {
         const foundBlogID = await BlogRepository.getBlogById(id)
     if (!foundBlogID){
-        return false
-    }else{
+        throw new Error('Incorrect blogId')
+    }
         return true
     }
-    }) 
+    ) 
     .withMessage('Incorrect blogId!'),
 
     inputModelValidation]

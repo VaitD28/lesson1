@@ -7,7 +7,7 @@ import { PostDb } from '../post/post-db'
 dotenv.config()
 
 export const port = 80
-const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017"
+const mongoURI = 'mongodb+srv://dimavoitkevich:CR7rz%24QLxrU3d76@vait98.pszrstu.mongodb.net/BloggerPlatformBack' || process.env.MONGO_URL
 const client = new MongoClient(mongoURI)
 
 const database = client.db('blogs-db')

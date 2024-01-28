@@ -23,7 +23,6 @@ postRoute.get('/:id', async (req: RequestWithParams<URIParamsPostModel>, res: Re
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-
     const post = await PostRepository.getPostById(id)
 
     if (post){

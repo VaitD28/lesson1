@@ -7,6 +7,6 @@ return {
 }
 }
 
-// export type ErrorType = {                                      
-//     errorsMessages: ErrorsMessages[]
-// }
+export type ErrorType = {                                      
+    errorsMessages: ErrorsMessages[]
+}

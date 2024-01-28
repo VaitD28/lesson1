@@ -37,11 +37,10 @@ postRoute.get('/:id', async (req: RequestWithParams<URIParamsPostModel>, res: Re
 postRoute.post('/', authMiddleware, postPostValidation, async (req: RequestWithBody<PostCreateModel>, res: Response<OutputPostType>) => {
     const createData = req.body
     const postId = await PostRepository.createPost(createData)
-
+    
     if (postId){
-
+        
         const newPost = await PostRepository.getPostById(postId)
-
         console.log(newPost)
             if(!newPost){
                 res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -50,6 +49,7 @@ postRoute.post('/', authMiddleware, postPostValidation, async (req: RequestWithB
         res.status(HTTP_STATUSES.CREATED_201).send(newPost)
     }
 })
+
 
 postRoute.put('/:id', authMiddleware, postPostValidation, async (req: RequestWithParamsBody<URIParamsPostModel, PostUpdateModel>, res: Response) =>{
     const id = req.params.id

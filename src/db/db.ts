@@ -23,7 +23,6 @@ export const runDb = async() => {
     }catch (e){
         console.log('Can`t connect to db')
 
-        
         await client.close()
 
     }

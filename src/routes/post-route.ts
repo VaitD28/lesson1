@@ -78,14 +78,14 @@ postRoute.put('/:id', authMiddleware, postPostValidation, async (req: RequestWit
 
 })
 
-postRoute.delete('/:id',authMiddleware, (req: RequestWithParams<URIParamsPostModel>, res: Response) => {
+postRoute.delete('/:id',authMiddleware, async (req: RequestWithParams<URIParamsPostModel>, res: Response) => {
     const id = req.params.id  
     if (!ObjectId.isValid(id)){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
 
-    let post = PostRepository.deletePostById(id)
+    let post = await PostRepository.deletePostById(id)
     
     if (!post) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

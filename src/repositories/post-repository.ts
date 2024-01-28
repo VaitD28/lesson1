@@ -69,10 +69,12 @@ export const PostRepository = {
     },
 
     async deletePostById(id:string): Promise<boolean> {
-        const res= await postsCollection.deleteOne({_id: new ObjectId(id)})
-
-        
-        return !!res.deletedCount
+        try{
+            const res= await postsCollection.deleteOne({_id: new ObjectId(id)})
+            
+            return !!res.deletedCount
+        }catch(e){
+            return false}
     }
 
 }

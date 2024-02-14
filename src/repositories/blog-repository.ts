@@ -62,7 +62,7 @@ export const BlogRepository = {
             sortBy: data.sortBy ?? "createdAt",
             sortDirection: data.sortDirection ?? "desc",
             pageNumber: data.pageNumber ? +data.pageNumber : 1,
-            pageSize: data.pageSize ?? 10
+            pageSize: data.pageSize ? +data.pageSize : 10
         }
         
         const {sortBy, sortDirection, pageNumber, pageSize} = sortData

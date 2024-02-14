@@ -23,7 +23,7 @@ export const BlogService = {
             name,
             description,
             websiteUrl,
-            isMembership: false,
+            isMembership: true,
             createdAt: new Date().toISOString()
         }
         

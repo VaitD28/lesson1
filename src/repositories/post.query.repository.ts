@@ -1,10 +1,9 @@
 import { OutputPostType } from "../output/post.output.model"
-import { blogsCollection, postsCollection } from "../db/db"
+import { postsCollection } from "../db/db"
 import { postMapper } from "../mappers/postMapper"
 import { ObjectId } from "mongodb"
 import { QueryPostBlogInputModel } from "../models/posts/inputPostsModel/query.post.input.model"
 import { Pagination } from "../types/types"
-import { BlogRepository } from "./blog-repository"
 
 export const PostQueryRepository = {
     async getAllPost(data: QueryPostBlogInputModel): Promise<Pagination<OutputPostType>> {

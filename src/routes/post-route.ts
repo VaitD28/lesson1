@@ -10,11 +10,12 @@ import { OutputPostType } from '../output/post.output.model'
 import { ObjectId } from 'mongodb'
 import { PostService } from '../domain/post-service'
 import { PostQueryRepository } from '../repositories/post.query.repository'
-import { QueryPostInputModel } from '../models/posts/inputPostsModel/query.post.input.model'
+import { QueryPostBlogInputModel } from '../models/posts/inputPostsModel/query.post.input.model'
+
 
 export const postRoute = Router({})
 
-postRoute.get('/', async (req: RequestWithQuery<QueryPostInputModel>, res: Response<Pagination<OutputPostType>>) => {
+postRoute.get('/', async (req: RequestWithQuery<QueryPostBlogInputModel>, res: Response<Pagination<OutputPostType>>) => {
 
     const posts = await PostQueryRepository.getAllPost(req.query)
 

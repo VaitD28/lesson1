@@ -6,5 +6,4 @@ export type OutputPostType = {
         blogId: string,
         blogName: string,
         createdAt: string
-    
 }

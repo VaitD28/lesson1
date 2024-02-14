@@ -7,3 +7,6 @@ export const HTTP_STATUSES = {
     NOT_FOUND_404: 404
 
 }
+
+type HTTP_STATUSESKeys = keyof typeof HTTP_STATUSES
+export type HTTPStatusType = (typeof HTTP_STATUSES) [HTTP_STATUSESKeys]

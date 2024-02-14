@@ -6,9 +6,20 @@ import { testRoute } from './routes/test-route';
 
 
 export const app = express()
+export const RouterPaths = {
+    videos: '/videos',
+    blogs: '/blogs',
+    posts: '/posts',
+    test: '/testing/all-data',
+    // blogId: '/blogs/:id',
+    // postId: '/posts/:id'
+}
 app.use(express.json())
 
-app.use('/videos', videoRoute)
-app.use('/blogs', blogRoute)
-app.use('/posts', postRoute)
-app.use('/testing/all-data', testRoute)
+
+
+app.use(RouterPaths.videos, videoRoute)
+app.use(RouterPaths.blogs, blogRoute)
+app.use(RouterPaths.posts, postRoute)
+app.use(RouterPaths.test, testRoute)
+

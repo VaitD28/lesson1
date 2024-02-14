@@ -11,7 +11,7 @@ export const BlogQueryRepository = {
             searchNameTerm: data.searchNameTerm ?? null,
             sortBy: data.sortBy ?? "createdAt",
             sortDirection: data.sortDirection ?? "desc",
-            pageNumber: data.pageNumber ? +data.pageNumber : 1,
+            pageNumber: data.pageNumber ?? 1,
             pageSize: data.pageSize ?? 10
         }
     

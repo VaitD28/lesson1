@@ -16,8 +16,13 @@ import { QueryPostBlogInputModel } from '../models/posts/inputPostsModel/query.p
 export const postRoute = Router({})
 
 postRoute.get('/', async (req: RequestWithQuery<QueryPostBlogInputModel>, res: Response<Pagination<OutputPostType>>) => {
-
-    const posts = await PostQueryRepository.getAllPost(req.query)
+    const sortData = {
+        sortBy: req.query.sortBy,
+        sortDirection: req.query.sortDirection,
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize
+    }
+    const posts = await PostQueryRepository.getAllPost(sortData)
 
     res.send(posts)
 })

@@ -6,24 +6,23 @@ import { QueryPostBlogInputModel } from "../models/posts/inputPostsModel/query.p
 import { Pagination } from "../types/types"
 
 export const PostQueryRepository = {
-    async getAllPost(data: QueryPostBlogInputModel): Promise<Pagination<OutputPostType>> {
-        const sortData = {
-            sortBy: data.sortBy ?? "createdAt",
-            sortDirection: data.sortDirection ?? "desc",
-            pageNumber: data.pageNumber ? +data.pageNumber : 1,
-            pageSize: data.pageSize ?? 10
-        }
-        const {sortBy, sortDirection, pageNumber, pageSize} = sortData
+    async getAllPost(sortData: QueryPostBlogInputModel): Promise<Pagination<OutputPostType>> {
 
+            const sortBy = sortData.sortBy ?? "createdAt"
+            const sortDirection= sortData.sortDirection ?? "desc"
+            const pageNumber=  sortData.pageNumber ?? 1
+            const pageSize= sortData.pageSize ?? 10
+        
+        
         const posts = await postsCollection
-            .find()
+            .find({})
             .sort(sortBy, sortDirection)
             .skip((pageNumber-1)*pageSize)
             .limit(pageSize)
             .toArray()
 
-            const totalCount = await postsCollection.countDocuments()
-            const pagesCount = Math.ceil(totalCount / pageSize)
+            const totalCount = await postsCollection.countDocuments({})
+            const pagesCount = Math.ceil(totalCount / +pageSize)
             return {
                 pageSize,
                 page: pageNumber,

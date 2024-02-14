@@ -17,9 +17,7 @@ import { BlogQueryRepository } from '../repositories/blog.query.repository'
 import { BlogRepository } from '../repositories/blog-repository'
 import { PostDb } from '../post/post-db'
 import { PostQueryRepository } from '../repositories/post.query.repository'
-import { BlogDb } from '../blog/blog-db'
-import { OutputPostType } from '../output/post.output.model'
-import { QueryPostInputModel } from '../models/posts/inputPostsModel/query.post.input.model'
+import { QueryPostBlogInputModel } from '../models/posts/inputPostsModel/query.post.input.model'
 
 
 export const blogRoute = Router({})
@@ -49,19 +47,23 @@ blogRoute.get('/:id', async (req: RequestWithParams<URIParamsBlogsModel>, res: R
 }
 );
 
-blogRoute.get('/:id/posts', async (req: RequestWithQueryParams<{id: string}, QueryPostInputModel>, res: Response)  => {
+blogRoute.get('/:id/posts', async (req: RequestWithQueryParams<{id: string}, QueryPostBlogInputModel>, res: Response)  => {
     const blogId = req.params.id
-    if (!ObjectId.isValid(blogId)){
-        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
-        return
+    
+    const sortData = {
+        sortBy: req.query.sortBy ?? "createdAt",
+        sortDirection: req.query.sortDirection ?? "desc",
+        pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+        pageSize: req.query.pageSize ?? 10,
     }
 
     const blog = await BlogQueryRepository.getBlogById(blogId)
+
     if (!blog){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-        const posts = await PostQueryRepository.getPostByBlogId(blogId, req.query)
+        const posts = await BlogRepository.getPostByBlogId(blogId, req.query)
         
         res.status(HTTP_STATUSES.OK_200).send(posts)
     }

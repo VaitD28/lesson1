@@ -18,12 +18,11 @@ export const BlogService = {
         const description = createData.description
         const websiteUrl = createData.websiteUrl
     
-        const newBlog: OutputBlogType = {
-            id: new Date().toISOString(),
+        const newBlog: BlogDb = {
             name,
             description,
             websiteUrl,
-            isMembership: true,
+            isMembership: false,
             createdAt: new Date().toISOString()
         }
         

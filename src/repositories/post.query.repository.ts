@@ -10,8 +10,8 @@ export const PostQueryRepository = {
 
             const sortBy = sortData.sortBy ?? "createdAt"
             const sortDirection= sortData.sortDirection ?? "desc"
-            const pageNumber=  sortData.pageNumber ?? 1
-            const pageSize= sortData.pageSize ?? 10
+            const pageNumber=  sortData.pageNumber ? +sortData.pageNumber :1
+            const pageSize= sortData.pageSize ? +sortData.pageSize : 10
         
         
         const posts = await postsCollection

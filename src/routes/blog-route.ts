@@ -58,7 +58,7 @@ blogRoute.get('/:blogId/posts', async (req: RequestWithQueryParams<{blogId: stri
 
     const blog = await BlogQueryRepository.getBlogById(blogId)
     if (!blog){
-        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
         const posts = await PostQueryRepository.getPostByBlogId(blogId, req.query)
@@ -97,7 +97,7 @@ blogRoute.post('/:id/posts', authMiddleware, createPostFromBlogValidation, async
     const blog = await BlogRepository.getBlogById(id)
 
     if (!blog){
-        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
 

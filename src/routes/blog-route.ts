@@ -49,8 +49,8 @@ blogRoute.get('/:id', async (req: RequestWithParams<URIParamsBlogsModel>, res: R
 }
 );
 
-blogRoute.get('/:blogId/posts', async (req: RequestWithQueryParams<{blogId: string}, QueryPostInputModel>, res: Response)  => {
-    const blogId = req.params.blogId
+blogRoute.get('/:id/posts', async (req: RequestWithQueryParams<{id: string}, QueryPostInputModel>, res: Response)  => {
+    const blogId = req.params.id
     if (!ObjectId.isValid(blogId)){
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
         return

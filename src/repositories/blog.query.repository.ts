@@ -25,8 +25,6 @@ export const BlogQueryRepository = {
                 }
             }
         }
-
-
             const blogs = await blogsCollection
             .find(filter)
             .sort(sortBy, sortDirection)

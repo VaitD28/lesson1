@@ -69,14 +69,14 @@ blogRoute.get('/:blogId/posts', async (req: RequestWithQueryParams<{blogId: stri
 
 );
 
-blogRoute.post('/', authMiddleware, blogPostValidation, async (req: RequestWithBody<BlogCreateModel>, res: Response<BlogDb | boolean>)  => {
+blogRoute.post('/', authMiddleware, blogPostValidation, async (req: RequestWithBody<BlogCreateModel>, res: Response)  => {
     
     const createBlogId = await BlogService.createBlog(req.body)
     if (!createBlogId){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-    const blog = await BlogService.getBlogById(createBlogId)
+    const blog = await BlogQueryRepository.getBlogById(createBlogId)
 
     if (!blog){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

@@ -63,7 +63,7 @@ blogRoute.get('/:blogId/posts', async (req: RequestWithQueryParams<{blogId: stri
     }
         const posts = await PostQueryRepository.getPostByBlogId(blogId, req.query)
         
-        res.status(HTTP_STATUSES.CREATED_201).send(posts)
+        res.status(HTTP_STATUSES.OK_200).send(posts)
     }
 
 

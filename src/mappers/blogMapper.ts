@@ -3,12 +3,12 @@ import { BlogDb } from "../blog/blog-db";
 import { OutputBlogType } from "../output/blog.output.models";
 
 export const blogMapper = (blog: WithId<BlogDb>): OutputBlogType => {
-return {
+    return {
     id : blog._id.toString(),
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,
     isMembership: blog.isMembership,
     createdAt: blog.createdAt
-}
+    }
 }

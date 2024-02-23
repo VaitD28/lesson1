@@ -3,6 +3,8 @@ import { videoRoute } from './routes/video-router';
 import { blogRoute } from './routes/blog-route';
 import { postRoute } from './routes/post-route';
 import { testRoute } from './routes/test-route';
+import { userRoute } from './routes/user-route';
+import { authRoute } from './routes/auth-route';
 
 
 export const app = express()
@@ -11,8 +13,8 @@ export const RouterPaths = {
     blogs: '/blogs',
     posts: '/posts',
     test: '/testing/all-data',
-    // blogId: '/blogs/:id',
-    // postId: '/posts/:id'
+    users: '/users',
+    auth: '/auth'
 }
 app.use(express.json())
 
@@ -22,4 +24,5 @@ app.use(RouterPaths.videos, videoRoute)
 app.use(RouterPaths.blogs, blogRoute)
 app.use(RouterPaths.posts, postRoute)
 app.use(RouterPaths.test, testRoute)
-
+app.use(RouterPaths.users, userRoute)
+app.use(RouterPaths.auth, authRoute)

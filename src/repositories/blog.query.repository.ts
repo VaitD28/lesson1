@@ -17,6 +17,7 @@ export const BlogQueryRepository = {
     
         let filter ={}
         const {sortBy, sortDirection, pageNumber, pageSize} = sortData
+
         if (sortData.searchNameTerm){
             filter = {
                 name: {
@@ -25,6 +26,8 @@ export const BlogQueryRepository = {
                 }
             }
         }
+        console.log(filter)
+        
             const blogs = await blogsCollection
             .find(filter)
             .sort(sortBy, sortDirection)

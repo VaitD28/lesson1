@@ -38,7 +38,7 @@ export const BlogRepository = {
                     websiteUrl:updateData.websiteUrl
                 }
             })
-    
+            
             return !!res.matchedCount
         }catch(e){
             return false}
@@ -48,12 +48,12 @@ export const BlogRepository = {
     async deleteBlogById(id:string): Promise<boolean> {
         try{
             const res= await blogsCollection.deleteOne({_id: new ObjectId(id)})
-
+            
             return !!res.deletedCount
         }catch(e){
             return false}
-    
 
+        
     },
 
     async getPostByBlogId(blogId:string, data: QueryPostBlogInputModel): Promise<Pagination<OutputPostType>> {
@@ -64,10 +64,9 @@ export const BlogRepository = {
             pageNumber: data.pageNumber ? +data.pageNumber : 1,
             pageSize: data.pageSize ? +data.pageSize : 10
         }
-        
-        const {sortBy, sortDirection, pageNumber, pageSize} = sortData
-            
 
+        const {sortBy, sortDirection, pageNumber, pageSize} = sortData
+        
         const posts = await postsCollection
             .find({blogId: blogId})
             .sort(sortBy, sortDirection)

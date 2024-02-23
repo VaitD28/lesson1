@@ -1,4 +1,4 @@
-import { ErrorsMessages } from "./customErrors";
+import { ErrorsMessages, ErrorsMessagesForLogin } from "./customErrors";
 
 export const errorHandler = ({msg, path}: any): ErrorsMessages => {
 return {
@@ -10,3 +10,9 @@ return {
 export type ErrorType = {                                      
     errorsMessages: ErrorsMessages[]
 }
+
+export const errorHandlerForLogin = ({msg}: any): ErrorsMessagesForLogin => {
+    return {
+        message: msg
+    }
+    }

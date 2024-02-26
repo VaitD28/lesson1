@@ -15,6 +15,7 @@ authRoute.post('/login', userLogValidation, async (req: RequestWithBody<LoginMod
 
     if (!checkUser){
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        return
     }
 
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)

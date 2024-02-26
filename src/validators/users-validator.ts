@@ -8,7 +8,7 @@ export const userLogValidation = [
     body('password')
     .isString(),
 
-    inputModelValidationForLogin
+    inputModelValidation
 ]
 
 export const userPostValidation = [   

@@ -3,12 +3,14 @@ import { inputModelValidation, inputModelValidationForLogin } from "../middlewar
 
 export const userLogValidation = [   
     body('loginOrEmail')
-    .isString(),
+    .isString()
+    .withMessage('Incorrect login or password'),
 
     body('password')
-    .isString(),
+    .isString()
+    .withMessage('Incorrect login or password'),
 
-    inputModelValidation
+    inputModelValidationForLogin
 ]
 
 export const userPostValidation = [   

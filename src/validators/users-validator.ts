@@ -21,7 +21,7 @@ export const userPostValidation = [
     body('email')
     .isString()
     .notEmpty()
-    .matches('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+    // .matches('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
     .withMessage('Incorrect login or password'),
 
     body('password')

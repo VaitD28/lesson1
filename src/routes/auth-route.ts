@@ -3,13 +3,12 @@ import { UserService } from "../domain/user-service";
 import { RequestWithBody } from "../types/types";
 import { LoginModel } from "../middlewares/auth/LoginModel";
 import { HTTP_STATUSES } from "../statuses";
-import { body } from "express-validator";
-import { userLogValidation } from "../validators/users-validator";
+
 
 export const authRoute = Router({})
 
 
-authRoute.post('/login', userLogValidation, async (req: RequestWithBody<LoginModel>, res:Response) => {
+authRoute.post('/login', async (req: RequestWithBody<LoginModel>, res:Response) => {
     
     const checkUser = await UserService.checkCredentials(req.body.loginOrEmail, req.body.password)
 

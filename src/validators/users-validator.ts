@@ -3,14 +3,10 @@ import { inputModelValidation, inputModelValidationForLogin } from "../middlewar
 
 export const userLogValidation = [   
     body('loginOrEmail')
-    .isString()
-    .notEmpty()
-    .withMessage('Incorrect login or password'),
+    .isString(),
 
     body('password')
-    .isString()
-    .notEmpty()
-    .withMessage('Incorrect login or password'),
+    .isString(),
 
     inputModelValidationForLogin
 ]
@@ -18,20 +14,20 @@ export const userLogValidation = [
 export const userPostValidation = [   
     body('login')
     .isString()
+    .isLength({min: 3, max: 10})
     .trim()
-    .notEmpty()
     .withMessage('Incorrect login or password'),
 
     body('email')
     .isString()
-    .trim()
     .notEmpty()
+    .matches('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
     .withMessage('Incorrect login or password'),
 
     body('password')
     .isString()
+    .isLength({min: 6, max: 20})
     .trim()
-    .notEmpty()
     .withMessage('Incorrect login or password'),
 
     inputModelValidation

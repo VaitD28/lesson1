@@ -22,35 +22,44 @@ export const UserRepository = {
         
         let filter1 = {}
         let filter2 = {}
+        let filter3 = {}
 
         const {sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm} = sortData
-        
-        if (sortData.searchLoginTerm){
 
-            filter2 = {
-                login: {
-                    $regex: sortData.searchLoginTerm,
-                    $options: 'i'
-                }
-            } 
+        if(sortData.searchEmailTerm && sortData.searchLoginTerm){
 
-        }
-
-        if (sortData.searchEmailTerm){
-            
-            filter1 = {
-                email: {
-                    $regex: sortData.searchEmailTerm, 
-                    $options: 'i'
-                }
+            filter3 = {
+                $or: [ { email: {$regex:sortData.searchEmailTerm, $options: 'i'} }, { login: {$regex:sortData.searchLoginTerm, $options: 'i'} } ] 
             }
+        }else {
+            if(sortData.searchEmailTerm || sortData.searchLoginTerm){
 
+                if (sortData.searchLoginTerm){
+
+                        filter2 = {
+                            login: {
+                                $regex: sortData.searchLoginTerm,
+                                $options: 'i'
+                            }
+                        } 
+            
+                    }
+            
+                    if (sortData.searchEmailTerm){
+
+                        filter1 = {
+                            email: {
+                                $regex: sortData.searchEmailTerm, 
+                                $options: 'i'
+                            }
+                        }
+
+                    }      
+            }
         }
 
+        const filter = Object.assign(filter1, filter2, filter3)
 
-
-
-        const filter = Object.assign(filter1, filter2) 
 
 
 

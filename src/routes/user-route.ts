@@ -8,18 +8,19 @@ import { userPostValidation } from "../validators/users-validator"
 import { UserCreateModel } from "../models/users/inputUsersModel/UserCreateModel"
 import { URIParamsUsersModel } from "../models/users/inputUsersModel/URIParamsUsersModel"
 import { ObjectId } from "mongodb"
+import { authMiddleware } from "../middlewares/auth/auth-middleware"
 
 
 export const userRoute = Router({})
 
-userRoute.get('/', async (req: RequestWithQuery<QueryUsersInputModel>, res: Response<Pagination<OutputUserType>>) =>{
+userRoute.get('/', authMiddleware, async (req: RequestWithQuery<QueryUsersInputModel>, res: Response<Pagination<OutputUserType>>) =>{
     
     const allUsers = await UserService.getAllUsers(req.query)
 
     res.status(HTTP_STATUSES.OK_200).send(allUsers)
 })
 
-userRoute.post('/', userPostValidation, async (req: RequestWithBody<UserCreateModel>, res:Response) => {
+userRoute.post('/', authMiddleware, userPostValidation, async (req: RequestWithBody<UserCreateModel>, res:Response) => {
 
     const newUser = await UserService.createUser(req.body) 
 
@@ -38,7 +39,7 @@ userRoute.post('/', userPostValidation, async (req: RequestWithBody<UserCreateMo
     res.status(HTTP_STATUSES.CREATED_201).send(user)
 })
 
-userRoute.delete('/:id', async (req: RequestWithParams<URIParamsUsersModel>, res: Response) => {
+userRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<URIParamsUsersModel>, res: Response) => {
     
     const id = req.params.id
 

@@ -100,8 +100,11 @@ export const UserRepository = {
         return user
     },
 
-    async deleteUserById(id: string){
-        const user = await usersCollection.deleteOne({_id: new ObjectId(id)})
-        return !!user.deletedCount
+    async deleteUserById(id: string): Promise<boolean> {
+        try{
+            const user = await usersCollection.deleteOne({_id: new ObjectId(id)})
+            return !!user.deletedCount
+        }catch(e){
+            return false}
     }
 }

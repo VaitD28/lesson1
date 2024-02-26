@@ -61,7 +61,6 @@ export const UserService = {
     },
 
     async deleteUserById (id:string){
-        const isDeleted = await UserRepository.deleteUserById(id)
         return UserRepository.deleteUserById(id)
     }
 

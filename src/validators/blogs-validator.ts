@@ -18,7 +18,7 @@ export const blogPostValidation = [
     .isString()
     .trim()
     .isLength({min:1,max:100})
-    .matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$')
+    // .matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$')
     .withMessage('Incorrect websiteUrl!'),
     
     inputModelValidation

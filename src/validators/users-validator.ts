@@ -10,7 +10,7 @@ export const userLogValidation = [
     .isString()
     .withMessage('Incorrect login or password'),
 
-    inputModelValidationForLogin
+    inputModelValidation
 ]
 
 export const userPostValidation = [   

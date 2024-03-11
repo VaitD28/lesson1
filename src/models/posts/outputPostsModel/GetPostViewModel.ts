@@ -1,6 +1,6 @@
 
 import { WithId } from "mongodb"
-import { OutputPostType } from "../../../output/post.output.model"
+import { OutputPostType } from "./post.output.model"
 import { PostDb } from "../../../post/post-db"
 
 

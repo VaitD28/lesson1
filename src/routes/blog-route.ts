@@ -4,7 +4,7 @@ import { authMiddleware } from '../middlewares/auth/auth-middleware'
 import { URIParamsBlogsModel } from '../models/blogs/inputBlogsModels/URIParamsBlogModel'
 import { blogPostValidation } from '../validators/blogs-validator'
 import { BlogCreateModel } from '../models/blogs/inputBlogsModels/BlogCreateModel'
-import { OutputBlogType } from '../output/blog.output.models'
+import { OutputBlogType } from '../models/blogs/outputBlogsModels/blog.output.models'
 import { ObjectId } from 'mongodb'
 import { BlogUpdateModel } from '../models/blogs/inputBlogsModels/BlogUpdateModel'
 import { BlogService } from '../domain/blog-service'
@@ -49,13 +49,6 @@ blogRoute.get('/:id', async (req: RequestWithParams<URIParamsBlogsModel>, res: R
 
 blogRoute.get('/:id/posts', async (req: RequestWithQueryParams<{id: string}, QueryPostBlogInputModel>, res: Response)  => {
     const blogId = req.params.id
-    
-    const sortData = {
-        sortBy: req.query.sortBy ?? "createdAt",
-        sortDirection: req.query.sortDirection ?? "desc",
-        pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
-        pageSize: req.query.pageSize ?? 10,
-    }
 
     const blog = await BlogQueryRepository.getBlogById(blogId)
 
@@ -152,6 +145,7 @@ blogRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<URIParams
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
         return
     }
+    
 
     const isDeleted = await BlogService.deleteBlogById(id)
 

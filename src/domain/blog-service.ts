@@ -1,7 +1,6 @@
 import { BlogDb } from "../blog/blog-db"
 import { BlogCreateModel } from "../models/blogs/inputBlogsModels/BlogCreateModel"
 import { BlogUpdateModel } from "../models/blogs/inputBlogsModels/BlogUpdateModel"
-import { OutputBlogType } from "../output/blog.output.models"
 import { BlogRepository } from "../repositories/blog-repository"
 
 export const BlogService = {

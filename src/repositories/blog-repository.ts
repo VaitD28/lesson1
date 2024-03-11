@@ -1,11 +1,9 @@
 import { ObjectId} from "mongodb"
 import { blogsCollection, postsCollection } from "../db/db"
 import { BlogUpdateModel } from "../models/blogs/inputBlogsModels/BlogUpdateModel"
-import { OutputBlogType } from "../output/blog.output.models"
 import { BlogDb } from "../blog/blog-db"
 import { QueryPostBlogInputModel} from "../models/posts/inputPostsModel/query.post.input.model"
-import { title } from "process"
-import { OutputPostType } from "../output/post.output.model"
+import { OutputPostType } from "../models/posts/outputPostsModel/post.output.model"
 import { Pagination } from "../types/types"
 import { postMapper } from "../mappers/postMapper"
 

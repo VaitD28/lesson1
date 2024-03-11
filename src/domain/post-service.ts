@@ -1,16 +1,16 @@
+import { CommentDb } from "../comment/comment-db"
 import { PostCreateModel } from "../models/posts/inputPostsModel/PostCreateModel"
 import { PostUpdateModel } from "../models/posts/inputPostsModel/PostUpdateModel"
+import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel"
 import { PostDb } from "../post/post-db"
 import { BlogRepository } from "../repositories/blog-repository"
 import { PostRepository } from "../repositories/post-repository"
+import { PostQueryRepository } from "../repositories/post.query.repository"
 
 export const PostService = {
 
     async createPost(data: PostCreateModel) {
 
-        const newPost = {
-
-        }
         const createdAt = new Date()
         const blog = await BlogRepository.getBlogById(data.blogId)
         if (blog){
@@ -19,7 +19,7 @@ export const PostService = {
                 blogName: blog.name,
                 createdAt: createdAt.toISOString()
             }
-        
+    
             return PostRepository.createPost(newPost)
         
         }else{

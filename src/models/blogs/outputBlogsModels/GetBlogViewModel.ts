@@ -1,7 +1,7 @@
 
 import { WithId } from "mongodb";
 import { BlogDb } from "../../../blog/blog-db";
-import { OutputBlogType } from "../../../output/blog.output.models";
+import { OutputBlogType } from "./blog.output.models";
 
 export const GetBlogViewModel = (blog: WithId<BlogDb>): OutputBlogType => {
     return {

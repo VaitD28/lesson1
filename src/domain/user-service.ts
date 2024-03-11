@@ -57,7 +57,7 @@ export const UserService = {
 
 
         if (passwordHash !== user.passwordHash) return false
-        return true
+        return user
     },
 
     async deleteUserById (id:string){

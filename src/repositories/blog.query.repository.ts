@@ -1,7 +1,7 @@
 import { ObjectId} from "mongodb"
 import { blogsCollection } from "../db/db"
 import { blogMapper } from "../mappers/blogMapper"
-import { OutputBlogType } from "../output/blog.output.models"
+import { OutputBlogType } from "../models/blogs/outputBlogsModels/blog.output.models"
 import { QueryBlogInputModel } from "../models/blogs/inputBlogsModels/query.blog.input.model"
 import { Pagination } from "../types/types"
 

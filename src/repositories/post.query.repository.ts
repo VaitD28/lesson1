@@ -1,4 +1,4 @@
-import { OutputPostType } from "../output/post.output.model"
+import { OutputPostType } from "../models/posts/outputPostsModel/post.output.model"
 import { postsCollection } from "../db/db"
 import { postMapper } from "../mappers/postMapper"
 import { ObjectId } from "mongodb"

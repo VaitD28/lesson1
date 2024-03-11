@@ -1,17 +1,23 @@
 import { Router, Response } from 'express'
-import { Pagination, RequestWithBody, RequestWithParams, RequestWithParamsBody, RequestWithQuery } from '../types/types'
+import { Pagination, RequestWithBody, RequestWithParams, RequestWithParamsBody, RequestWithQuery, RequestWithQueryParams } from '../types/types'
 import { authMiddleware } from '../middlewares/auth/auth-middleware'
 import { postPostValidation } from '../validators/post-validator'
 import { PostCreateModel } from '../models/posts/inputPostsModel/PostCreateModel'
 import { URIParamsPostModel } from '../models/posts/inputPostsModel/URIParamsPostModel'
 import { PostUpdateModel } from '../models/posts/inputPostsModel/PostUpdateModel'
 import { HTTP_STATUSES } from '../statuses'
-import { OutputPostType } from '../output/post.output.model'
+import { OutputPostType } from '../models/posts/outputPostsModel/post.output.model'
 import { ObjectId } from 'mongodb'
 import { PostService } from '../domain/post-service'
 import { PostQueryRepository } from '../repositories/post.query.repository'
 import { QueryPostBlogInputModel } from '../models/posts/inputPostsModel/query.post.input.model'
-
+import { bearerAuthMiddleware } from '../middlewares/auth/bearer-auth'
+import { CommentPostModel } from '../models/comments/inputCommentModel/CommentsInputModel'
+import { CommentService } from '../domain/comment-service'
+import { commentsValidator } from '../validators/comments-validator'
+import { CommentQueryRepository } from '../repositories/comment.query.repository'
+import { CommentRepository } from '../repositories/comment-repository'
+import { QueryPostCommentInputModel } from '../models/comments/inputCommentModel/query.comment.input.model'
 
 export const postRoute = Router({})
 
@@ -103,5 +109,50 @@ postRoute.delete('/:id',authMiddleware, async (req: RequestWithParams<URIParamsP
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
+postRoute.post('/:id/comments', bearerAuthMiddleware, commentsValidator, async (req: RequestWithParamsBody<URIParamsPostModel, CommentPostModel>, res: Response) => {
+    const id = req.params.id
 
+    if (!ObjectId.isValid(id)){
+        console.log(1)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
+    }
+    console.log(1)
+    const content = req.body.content
+    const userData = req.user
+    const newComment = await CommentService.createComment(id, content, userData!)
+    if (!newComment){
+        res.sendStatus (HTTP_STATUSES.NOT_FOUND_404)
+        return
+    }else{
+        const comment = await CommentQueryRepository.getCommentById(newComment)
+        if (!comment){
+            res.sendStatus (HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
+        res.status(HTTP_STATUSES.CREATED_201).send(comment)
+    }
+} )
 
+postRoute.get('/:id/comments', async (req: RequestWithQueryParams<{id:string}, QueryPostCommentInputModel>, res: Response) => {
+
+    const postId = req.params.id
+    
+    const data = req.query
+
+    if(!ObjectId.isValid(postId)){
+        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+    }
+
+    const post = await PostQueryRepository.getPostById(postId)
+
+    if(!post){
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
+    }
+
+    const comments = await CommentQueryRepository.getCommentsByPostId(postId, data)
+
+    res.status(HTTP_STATUSES.OK_200).send(comments)
+
+})

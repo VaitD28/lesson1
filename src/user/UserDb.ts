@@ -2,8 +2,8 @@ export type UserDb = {
     login:string,
     email: string,
     passwordHash: string,
-    createdAt: string
-    confirmationCode: string
-    // confirmationCodeExpirationDate: string
+    createdAt: string,
+    confirmationCode: string,
+    expirationDate: Date ,
     isConfirmed: boolean 
 }

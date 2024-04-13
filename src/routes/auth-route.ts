@@ -8,7 +8,6 @@ import { jwtService } from "../application/jwt.service";
 import { bearerAuthMiddleware } from "../middlewares/auth/bearer-auth";
 import { RegistrationModel } from "../middlewares/auth/RegistrationModel";
 import { authService } from "../domain/auth-service";
-import { emailManager } from "../managers/email-manager";
 import { confirmModel } from "../middlewares/auth/confirmationModel";
 import { resendingValidator } from "../validators/resending-validator";
 import { resendingModel } from "../middlewares/auth/resendingModel";

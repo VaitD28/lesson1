@@ -5,6 +5,7 @@ import { UserRepository } from "../repositories/user-repository";
 import { QueryUsersInputModel } from "../models/users/inputUsersModel/QueryUsersInputModel";
 import { randomUUID } from "crypto";
 import { bcryptService } from "./bcrypt-service";
+import { add } from "date-fns/add";
 
 
 export const UserService = {
@@ -35,6 +36,10 @@ export const UserService = {
             passwordHash: passwordHash,
             createdAt: new Date().toISOString(),
             confirmationCode: randomUUID(),
+            expirationDate: add(new Date(), {
+                hours: 1,
+                minutes: 30,
+            }),
             isConfirmed: true
         }    
 

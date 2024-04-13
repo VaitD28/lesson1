@@ -4,13 +4,16 @@ import { randomUUID } from "crypto";
 import { emailManager } from "../managers/email-manager";
 import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
 import { bcryptService } from "./bcrypt-service";
+import { add } from "date-fns/add";
+import { UUID } from "mongodb";
+
 
 export const authService = {
 
 
     async registerUser(login: string, email: string, password: string) : Promise<UserDb | null>{
         const user = await UserRepository.getUserByLoginOrEmail(login, email);
-        
+                console.log(user)
         if (user) return null
 
         const passwordHash = await bcryptService.generateHash(password)
@@ -21,6 +24,10 @@ export const authService = {
             passwordHash: passwordHash,
             createdAt: new Date().toISOString(),
             confirmationCode: randomUUID(),
+            expirationDate: add(new Date(), {
+                hours: 1,
+                minutes: 30,
+            }),
             isConfirmed: true
         }    
 
@@ -41,10 +48,9 @@ export const authService = {
         if (!user){
             return null
         }  
-        const date1 =new Date()
-        const date2 = user.createdAt
-        const date3 = new Date(date1).getTime() - new Date(date2).getTime()
-        if (date3 < 5400000 ){
+    
+        if (user.confirmationCode === code && new Date() < user.expirationDate){
+
         await UserRepository.updateConfirm(user)
         return true
         }

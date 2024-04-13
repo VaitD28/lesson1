@@ -5,7 +5,7 @@ import { emailManager } from "../managers/email-manager";
 import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
 import { bcryptService } from "./bcrypt-service";
 import { add } from "date-fns/add";
-import { UUID } from "mongodb";
+
 
 
 export const authService = {
@@ -13,7 +13,7 @@ export const authService = {
 
     async registerUser(login: string, email: string, password: string) : Promise<UserDb | null>{
         const user = await UserRepository.getUserByLoginOrEmail(login, email);
-                console.log(user)
+        
         if (user) return null
 
         const passwordHash = await bcryptService.generateHash(password)

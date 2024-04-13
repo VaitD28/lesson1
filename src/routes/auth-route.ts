@@ -21,7 +21,7 @@ export const authRoute = Router({})
 authRoute.post('/login', userLogValidation, async (req: RequestWithBody<LoginModel>, res:Response) => {
     
     const checkUser = await UserService.checkCredentials(req.body.loginOrEmail, req.body.password)
-    console.log(checkUser)
+
 
     if (checkUser){
         

@@ -6,6 +6,8 @@ import { QueryUsersInputModel } from "../models/users/inputUsersModel/QueryUsers
 import { randomUUID } from "crypto";
 import { bcryptService } from "./bcrypt-service";
 import { add } from "date-fns/add";
+import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
+import { WithId } from "mongodb";
 
 
 export const UserService = {
@@ -15,13 +17,13 @@ export const UserService = {
     return UserRepository.getAllUsers(data)
     },
 
-    async getUserById (id: string){
+    async getUserById (id: string): Promise<OutputUserType | null>{
         const user = await UserRepository.getUserById(id)
         if (!user) return null
         return userMapper(user)
     },
     
-    async createUser(login: string, email: string, password: string){
+    async createUser(login: string, email: string, password: string): Promise< OutputUserType | null>{
 
         const user = await UserRepository.getUserByLoginOrEmail(login, email)
 
@@ -44,20 +46,14 @@ export const UserService = {
         }    
 
         const createUser =  await UserRepository.createUser(newUser)
-        try{
-            return userMapper
-        } catch {
-            console.error('Create Error')
-            return
-        }
-
-            
         
-
+        if (!createUser) return null
+        
+        return userMapper(createUser)
     
     },
-        
-    async _generateHash (password: string, salt: string){
+
+    async _generateHash (password: string, salt: string):  Promise<string>{
         
             const hash = bcrypt.hash(password, salt)
             return hash
@@ -75,11 +71,11 @@ export const UserService = {
         return user
     },
 
-    async deleteUserById (id:string){
+    async deleteUserById (id:string): Promise<boolean>{
         return UserRepository.deleteUserById(id)
     },
 
-    async checkUniqueLoginEmail (login: string, email: string){
+    async checkUniqueLoginEmail (login: string, email: string): Promise<boolean>{
         const user = await UserRepository.getUserByLoginOrEmail(login, email)
         if (!user){
             return true

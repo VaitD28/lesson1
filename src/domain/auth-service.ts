@@ -41,7 +41,7 @@ export const authService = {
         return null
     },
 
-    async confirmationCode(code: string){
+    async confirmationCode(code: string) : Promise<boolean | null>{
         
         const user = await UserRepository.getUserByConfirmCode(code)
         
@@ -57,7 +57,7 @@ export const authService = {
         return false
     },
 
-    async resendingCode(data: OutputUserType){
+    async resendingCode(data: OutputUserType) : Promise<boolean | null>{
 
         const user = await UserRepository.getUserById(data.id) 
         

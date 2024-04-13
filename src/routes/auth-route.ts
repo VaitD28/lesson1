@@ -53,13 +53,13 @@ authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<
 
     const newUser = await authService.registerUser(req.body.login, req.body.email, req.body.password)
 
-    if (!newUser){
+    if (!newUser){ 
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
-        return
+        return}
 
 
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-    }
+    
 })
 
 authRoute.post('/registration-confirmation', async (req: RequestWithBody<confirmModel>, res: Response) => {

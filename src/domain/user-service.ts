@@ -3,8 +3,8 @@ import { UserDb} from "../user/UserDb";
 import { userMapper } from "../mappers/userMapper";
 import { UserRepository } from "../repositories/user-repository";
 import { QueryUsersInputModel } from "../models/users/inputUsersModel/QueryUsersInputModel";
-import { emailAdapter } from "../adapters/email-adapter";
 import { randomUUID } from "crypto";
+import { bcryptService } from "./bcrypt-service";
 
 
 export const UserService = {
@@ -26,18 +26,15 @@ export const UserService = {
 
         if (user) return null
         
-        const passwordSalt = await bcrypt.genSalt(10)
 
-        const passwordHash = await this._generateHash(password, passwordSalt)
+        const passwordHash = await bcryptService.generateHash(password)
 
         const newUser: UserDb = {
             login,
             email,
             passwordHash: passwordHash,
-            passwordSalt: passwordSalt,
             createdAt: new Date().toISOString(),
             confirmationCode: randomUUID(),
-            // confirmationCodeExpirationDate: new Date().toISOString(),
             isConfirmed: true
         }    
 
@@ -66,10 +63,10 @@ export const UserService = {
 
         if(!user) return false
 
-        const passwordHash = await this._generateHash(password, user.passwordSalt)
+        const checkPassword = await bcryptService.checkPassword(password, user.passwordHash)
 
 
-        if (passwordHash !== user.passwordHash) return false
+        if (!checkPassword) return false
         return user
     },
 

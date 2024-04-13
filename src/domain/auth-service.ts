@@ -1,12 +1,9 @@
 import { UserRepository } from "../repositories/user-repository";
 import { UserDb } from "../user/UserDb";
-import bcrypt from "bcrypt"
 import { randomUUID } from "crypto";
-import { UserService } from "./user-service";
 import { emailManager } from "../managers/email-manager";
-import { WithId } from "mongodb";
-import { usersCollection } from "../db/db";
 import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
+import { bcryptService } from "./bcrypt-service";
 
 export const authService = {
 
@@ -16,34 +13,14 @@ export const authService = {
         
         if (user) return null
 
-        const passwordSalt = await bcrypt.genSalt(10)
-
-        const passwordHash = await UserService._generateHash(password, passwordSalt)
-        // const createdAt = new Date()
-        // const confirmationCodeExpirationDate = createdAt.setHours(createdAt.getHours() + 2)
-        // const add = (hours: number | undefined, minutes: number | undefined) => {
-        //     let date = new Date() 
-        //     let date2
-        //     if (hours){
-        //         date2 = date.setHours(date.getHours() + hours)
-        //     }
-        
-        //     if (minutes){
-        //         date2 = date.setMinutes(date.getMinutes() + minutes)
-        //     }
-            
-        //     return date2 
-        
-        // }
+        const passwordHash = await bcryptService.generateHash(password)
         
         const newUser: UserDb = {
             login,
             email,
             passwordHash: passwordHash,
-            passwordSalt: passwordSalt,
             createdAt: new Date().toISOString(),
             confirmationCode: randomUUID(),
-            // confirmationCodeExpirationDate: confirmationCodeExpirationDate.toString(),
             isConfirmed: true
         }    
 

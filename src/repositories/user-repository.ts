@@ -138,7 +138,7 @@ export const UserRepository = {
     async getUserByEmail(email: string){ 
         const user = await usersCollection.findOne({email: email})
         if (user){
-            return  userMapper(user)
+            return  user
         }else{
             return false}
     },

@@ -12,6 +12,7 @@ import { confirmModel } from "../middlewares/auth/confirmationModel";
 import { resendingValidator } from "../validators/resending-validator";
 import { resendingModel } from "../middlewares/auth/resendingModel";
 import { UserRepository } from "../repositories/user-repository";
+import { emailManager } from "../managers/email-manager";
 
 
 export const authRoute = Router({})
@@ -55,10 +56,11 @@ authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<
 
     if (!newUser){ 
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
-        return}
+        return
+    }
 
 
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     
 })
 
@@ -73,6 +75,7 @@ authRoute.post('/registration-confirmation', async (req: RequestWithBody<confirm
 })
 
 authRoute.post ('/registration-email-resending', resendingValidator,  async (req: RequestWithBody<resendingModel>, res: Response) => {
+    
     const user = await UserRepository.getUserByEmail(req.body.email)
 
     if (!user) {
@@ -80,5 +83,7 @@ authRoute.post ('/registration-email-resending', resendingValidator,  async (req
         return
     }
 
+    emailManager.sendConfirmationCode(user)
     
+    return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })

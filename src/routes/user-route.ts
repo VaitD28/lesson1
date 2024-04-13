@@ -9,6 +9,8 @@ import { UserCreateModel } from "../models/users/inputUsersModel/UserCreateModel
 import { URIParamsUsersModel } from "../models/users/inputUsersModel/URIParamsUsersModel"
 import { ObjectId } from "mongodb"
 import { authMiddleware } from "../middlewares/auth/auth-middleware"
+import { emailAdapter } from "../adapters/email-adapter"
+import { emailManager } from "../managers/email-manager"
 
 
 export const userRoute = Router({})
@@ -22,21 +24,14 @@ userRoute.get('/', authMiddleware, async (req: RequestWithQuery<QueryUsersInputM
 
 userRoute.post('/', authMiddleware, userPostValidation, async (req: RequestWithBody<UserCreateModel>, res:Response) => {
 
-    const newUser = await UserService.createUser(req.body) 
+    const newUser = await UserService.createUser(req.body.login, req.body.email, req.body.password) 
 
     if (!newUser){
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
         return
     }
-    
-    const user = await UserService.getUserById(newUser)
 
-    if (!user){
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
-    }
-    
-    res.status(HTTP_STATUSES.CREATED_201).send(user)
+    res.sendStatus(HTTP_STATUSES.CREATED_201)
 })
 
 userRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<URIParamsUsersModel>, res: Response) => {

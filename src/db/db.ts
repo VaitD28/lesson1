@@ -8,7 +8,7 @@ import {CommentDb} from '../comment/comment-db'
 dotenv.config()
 
 export const port = 80
-const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017"
+export const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017"
 export const JWT_SECRET = process.env.JWT_SECRET || "123"
 const client = new MongoClient(mongoURI)
 

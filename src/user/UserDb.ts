@@ -4,4 +4,7 @@ export type UserDb = {
     passwordHash: string,
     passwordSalt: string,
     createdAt: string
+    confirmationCode: string
+    // confirmationCodeExpirationDate: string
+    isConfirmed: boolean 
 }

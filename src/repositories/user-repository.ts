@@ -1,10 +1,11 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { usersCollection } from "../db/db";
 import { UserDb } from "../user/UserDb";
 import { QueryUsersInputModel } from "../models/users/inputUsersModel/QueryUsersInputModel";
 import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
 import { Pagination } from "../types/types";
 import { userMapper } from "../mappers/userMapper";
+import { randomUUID } from "crypto";
 
 
 export const UserRepository = {
@@ -92,7 +93,8 @@ export const UserRepository = {
     },
     async createUser(data: UserDb) {
         const user = await usersCollection.insertOne(data)
-        return user.insertedId.toString()
+        return await usersCollection.findOne ({_id: new ObjectId(user.insertedId.toString())})
+
     },
 
     async findByLoginOrEmail(loginOrEmail: string){
@@ -106,5 +108,63 @@ export const UserRepository = {
             return !!user.deletedCount
         }catch(e){
             return false}
+    },
+    
+    async getUserByLoginOrEmail(login:string, email:string) {
+
+        const findUserByLogin = await usersCollection.findOne({login:login})
+        if(findUserByLogin){
+            return findUserByLogin
+        }else{
+            const findUserByEmail = await usersCollection.findOne({email:email})
+                if(findUserByEmail){
+                    return findUserByEmail
+                }else{
+                    return false
+                }
+        }
+    },
+
+    async getUserByConfirmCode(code: string){ 
+        const user = await usersCollection.findOne({confirmationCode: code})
+        if (user){
+            return  user
+        }else{
+            return false}
+
+    },
+
+
+    async getUserByEmail(email: string){ 
+        const user = await usersCollection.findOne({email: email})
+        if (user){
+            return  userMapper(user)
+        }else{
+            return false}
+    },
+
+    async updateConfirm(user: WithId<UserDb>){
+        const res = await usersCollection.updateOne({_id: user._id}, {
+            $set: {
+                isConfirmed: true
+            }
+        })
+
+        return !!res.matchedCount
+    },
+
+    async updateCode(user: WithId<UserDb>){
+        
+        const createdAt = new Date()
+        const confirmationCodeExpirationDate = createdAt.setHours(createdAt.getHours() + 2)
+
+        const res = await usersCollection.updateOne({_id: user._id}, {
+            $set: {
+                confirmationCode: randomUUID(),
+                confirmationCodeExpirationDate: confirmationCodeExpirationDate.toString()
+            }
+        })
+
+        return !!res.matchedCount
     }
 }

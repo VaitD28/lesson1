@@ -47,7 +47,6 @@ userRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<URIParams
     const isDeleted = await UserService.deleteUserById(id)
 
     if(!isDeleted){
-
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }

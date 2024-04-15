@@ -18,19 +18,27 @@ export const userPostValidation = [
     .isString()
     .isLength({min: 3, max: 10})
     .trim()
-    .withMessage('Incorrect login or password'),
+    .withMessage('Incorrect login'),
 
     body('email')
     .isString()
     .notEmpty()
-    // .matches('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-    .withMessage('Incorrect login or password'),
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .withMessage('Incorrect email'),
+    // .custom(async email => {
+    // if (email !== new RegExp('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')){
+    //     throw new Error('Incorrect email')
+    // }
+    //     return true
+    // }
+    // ), 
+
 
     body('password')
     .isString()
     .isLength({min: 6, max: 20})
     .trim()
-    .withMessage('Incorrect login or password'),
+    .withMessage('Incorrect password'),
 
     inputModelValidation
 ]

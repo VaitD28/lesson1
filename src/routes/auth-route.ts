@@ -13,6 +13,7 @@ import { resendingValidator } from "../validators/resending-validator";
 import { resendingModel } from "../middlewares/auth/resendingModel";
 import { UserRepository } from "../repositories/user-repository";
 import { emailManager } from "../managers/email-manager";
+import { errorHandler } from "../errorHandling/errorHandler";
 
 
 export const authRoute = Router({})
@@ -31,10 +32,11 @@ authRoute.post('/login', userLogValidation, async (req: RequestWithBody<LoginMod
         "accessToken": token 
     }
 
-    res.status(HTTP_STATUSES.OK_200).send(accessToken)
+    return res.status(HTTP_STATUSES.OK_200).send(accessToken)
 
     }else{
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        return
     }
 })
 
@@ -51,7 +53,16 @@ authRoute.get('/me', bearerAuthMiddleware, async (req: Request, res: Response) =
 })
 
 authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<RegistrationModel>, res:Response) => {
+    const isUniqueUser = await authService.checkUniqueUser(req.body.login, req.body.email)
 
+    if(!isUniqueUser){
+        const error = {
+            message:"Incorrect email", 
+            field:"email"
+        }
+        res.status(HTTP_STATUSES.BAD_REQUEST_400).send(error)
+        return 
+    }
     const newUser = await authService.registerUser(req.body.login, req.body.email, req.body.password)
 
     if (!newUser){ 
@@ -60,7 +71,7 @@ authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<
     }
 
 
-    return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    return res.status(HTTP_STATUSES.NO_CONTENT_204).send('Input data is accepted. Email with confirmation code will be send to passed email address')
     
 })
 

@@ -88,6 +88,7 @@ postRoute.put('/:id', authMiddleware, postPostValidation, async (req: RequestWit
     
     if (updatePost){
     res.status(HTTP_STATUSES.NO_CONTENT_204).send(updatePost)
+    return
     }
 
 })
@@ -142,6 +143,7 @@ postRoute.get('/:id/comments', async (req: RequestWithQueryParams<{id:string}, Q
 
     if(!ObjectId.isValid(postId)){
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+        return
     }
 
     const post = await PostQueryRepository.getPostById(postId)

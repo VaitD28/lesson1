@@ -68,6 +68,7 @@ authRoute.post('/registration-confirmation', async (req: RequestWithBody<confirm
     const confirm = await authService.confirmationCode(req.body.code)
     if (!confirm) {
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+        return
     }
 
     return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)

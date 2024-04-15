@@ -7,7 +7,6 @@ import { randomUUID } from "crypto";
 import { bcryptService } from "./bcrypt-service";
 import { add } from "date-fns/add";
 import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
-import { WithId } from "mongodb";
 
 
 export const UserService = {

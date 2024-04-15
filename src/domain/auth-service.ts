@@ -46,7 +46,7 @@ export const authService = {
         const user = await UserRepository.getUserByConfirmCode(code)
         
         if (!user){
-            return null
+            return false
         }  
     
         if (user.confirmationCode === code && new Date() < user.expirationDate){

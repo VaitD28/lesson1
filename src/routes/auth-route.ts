@@ -53,16 +53,7 @@ authRoute.get('/me', bearerAuthMiddleware, async (req: Request, res: Response) =
 })
 
 authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<RegistrationModel>, res:Response) => {
-    const isUniqueUser = await authService.checkUniqueUser(req.body.login, req.body.email)
 
-    if(!isUniqueUser){
-        const error = {
-            message:"Incorrect email", 
-            field:"email"
-        }
-        res.status(HTTP_STATUSES.BAD_REQUEST_400).send(error)
-        return 
-    }
     const newUser = await authService.registerUser(req.body.login, req.body.email, req.body.password)
 
     if (!newUser){ 
@@ -90,7 +81,12 @@ authRoute.post ('/registration-email-resending', resendingValidator,  async (req
     
     const user = await UserRepository.getUserByEmail(req.body.email)
 
-    if (!user) {
+    if (!user)  {
+        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+        return
+    }
+
+    if (!user.isConfirmed){
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
         return
     }

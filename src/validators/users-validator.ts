@@ -1,5 +1,7 @@
 import { body } from "express-validator";
 import { inputModelValidation, inputModelValidationForLogin } from "../middlewares/inputModel/input-model-validation";
+import { authService } from "../domain/auth-service";
+import { UserService } from "../domain/user-service";
 
 export const userLogValidation = [   
     body('loginOrEmail')
@@ -19,19 +21,28 @@ export const userPostValidation = [
     .isLength({min: 3, max: 10})
     .trim()
     .withMessage('Incorrect login'),
-
-    body('email')
-    .isString()
-    .notEmpty()
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-    .withMessage('Incorrect email'),
-    // .custom(async email => {
-    // if (email !== new RegExp('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')){
+    // .custom(async login => {
+    //     const checkUniqueEmail = await authService.checkUniqueByEmail(email)
+    // if (!checkUniqueEmail){
     //     throw new Error('Incorrect email')
     // }
     //     return true
     // }
     // ), 
+
+    body('email')
+    .isString()
+    .notEmpty()
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .withMessage('Incorrect email')
+    .custom(async email => {
+        const checkUniqueEmail = await authService.checkUniqueByEmail(email)
+    if (!checkUniqueEmail){
+        throw new Error('Incorrect email')
+    }
+        return true
+    }
+    ), 
 
 
     body('password')

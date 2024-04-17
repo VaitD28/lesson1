@@ -9,6 +9,15 @@ import { add } from "date-fns/add";
 
 
 export const authService = {
+    async checkUniqueByEmail(email: string) : Promise<boolean>{
+        const user = await UserRepository.getUserByEmail(email);
+        
+        if (user) return false
+
+        return true
+    },
+
+    
 
     async checkUniqueUser(login: string, email: string) : Promise<boolean>{
         const user = await UserRepository.getUserByLoginOrEmail(login, email);

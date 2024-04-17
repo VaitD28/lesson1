@@ -9,18 +9,22 @@ import { add } from "date-fns/add";
 
 
 export const authService = {
-    async checkUniqueByEmail(email: string) : Promise<boolean>{
-        const user = await UserRepository.getUserByEmail(email);
-        
-        if (user) return false
+
+    async getUserByEmail(email:string){
+
+        const user = await UserRepository.getUserByEmail(email)
+
+        if (!user)  return false
+    
+        if (user.isConfirmed) return false
+    
+        emailManager.sendConfirmationCode(user)
 
         return true
     },
 
-    
-
-    async checkUniqueUser(login: string, email: string) : Promise<boolean>{
-        const user = await UserRepository.getUserByLoginOrEmail(login, email);
+    async checkUniqueUser(loginOrEmail: string ) {
+        const user = await UserRepository.getUserByLoginOrEmail(loginOrEmail);
         
         if (user) return false
 
@@ -28,10 +32,7 @@ export const authService = {
     },
 
     async registerUser(login: string, email: string, password: string) : Promise<UserDb | null>{
-        const user = await UserRepository.getUserByLoginOrEmail(login, email);
         
-        if (user) return null
-
         const passwordHash = await bcryptService.generateHash(password)
         
         const newUser: UserDb = {

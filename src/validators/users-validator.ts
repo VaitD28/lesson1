@@ -20,15 +20,15 @@ export const userPostValidation = [
     .isString()
     .isLength({min: 3, max: 10})
     .trim()
-    .withMessage('Incorrect login'),
-    // .custom(async login => {
-    //     const checkUniqueEmail = await authService.checkUniqueByEmail(email)
-    // if (!checkUniqueEmail){
-    //     throw new Error('Incorrect email')
-    // }
-    //     return true
-    // }
-    // ), 
+    .withMessage('Incorrect login')
+    .custom(async login => {
+        const checkUniqueEmail = await authService.checkUniqueUser(login)
+    if (!checkUniqueEmail){
+        throw new Error('Incorrect email')
+    }
+        return true
+    }
+    ), 
 
     body('email')
     .isString()
@@ -36,7 +36,7 @@ export const userPostValidation = [
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     .withMessage('Incorrect email')
     .custom(async email => {
-        const checkUniqueEmail = await authService.checkUniqueByEmail(email)
+        const checkUniqueEmail = await authService.checkUniqueUser(email)
     if (!checkUniqueEmail){
         throw new Error('Incorrect email')
     }

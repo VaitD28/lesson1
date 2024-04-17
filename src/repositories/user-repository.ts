@@ -110,13 +110,13 @@ export const UserRepository = {
             return false}
     },
     
-    async getUserByLoginOrEmail(login:string, email:string) {
+    async getUserByLoginOrEmail(loginOrEmail:string) {
 
-        const findUserByLogin = await usersCollection.findOne({login:login})
+        const findUserByLogin = await usersCollection.findOne({login:loginOrEmail})
         if(findUserByLogin){
             return findUserByLogin
         }else{
-            const findUserByEmail = await usersCollection.findOne({email:email})
+            const findUserByEmail = await usersCollection.findOne({email:loginOrEmail})
                 if(findUserByEmail){
                     return findUserByEmail
                 }else{

@@ -5,8 +5,8 @@ export const resendingValidator = [
     body('email')
     .isString()
     .notEmpty()
-    // .matches('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-    .withMessage('Incorrect login or password'),
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .withMessage('Incorrect email'),
     
     inputModelValidation
 ]

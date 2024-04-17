@@ -23,12 +23,7 @@ export const UserService = {
     },
     
     async createUser(login: string, email: string, password: string): Promise< OutputUserType | null>{
-
-        const user = await UserRepository.getUserByLoginOrEmail(login, email)
-
-        if (user) return null
         
-
         const passwordHash = await bcryptService.generateHash(password)
 
         const newUser: UserDb = {
@@ -74,12 +69,4 @@ export const UserService = {
         return UserRepository.deleteUserById(id)
     },
 
-    async checkUniqueLoginEmail (login: string, email: string): Promise<boolean>{
-        const user = await UserRepository.getUserByLoginOrEmail(login, email)
-        if (!user){
-            return true
-        }else{
-            return false
-        }
-    }
 }

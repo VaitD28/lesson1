@@ -52,10 +52,7 @@ authRoute.get('/me', bearerAuthMiddleware, async (req: Request, res: Response) =
 })
 
 authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<RegistrationModel>, res:Response) => {
-    //const checkUniqueUser = await authService.checkUniqueUser(req.body.login, req.body.email)
-    // if(!checkUniqueUser){
-    //     throw new Error { message: "Incorrect email", field: "email"}
-    // }
+
     const newUser = await authService.registerUser(req.body.login, req.body.email, req.body.password)
 
     if (!newUser){ 

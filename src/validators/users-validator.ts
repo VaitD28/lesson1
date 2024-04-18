@@ -24,7 +24,7 @@ export const userPostValidation = [
     .custom(async login => {
         const checkUniqueEmail = await authService.checkUniqueUser(login)
     if (!checkUniqueEmail){
-        throw new Error('Incorrect email')
+        throw new Error('Incorrect login')
     }
         return true
     }

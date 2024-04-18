@@ -1,4 +1,4 @@
-import { Router, Response, Request } from "express"
+import { Router, Response } from "express"
 import { UserService } from "../domain/user-service"
 import { HTTP_STATUSES } from "../statuses"
 import { Pagination, RequestWithBody, RequestWithParams, RequestWithQuery } from "../types/types"
@@ -9,8 +9,7 @@ import { UserCreateModel } from "../models/users/inputUsersModel/UserCreateModel
 import { URIParamsUsersModel } from "../models/users/inputUsersModel/URIParamsUsersModel"
 import { ObjectId } from "mongodb"
 import { authMiddleware } from "../middlewares/auth/auth-middleware"
-import { emailAdapter } from "../adapters/email-adapter"
-import { emailManager } from "../managers/email-manager"
+
 
 
 export const userRoute = Router({})
@@ -31,7 +30,7 @@ userRoute.post('/', authMiddleware, userPostValidation, async (req: RequestWithB
         return
     }
 
-    res.sendStatus(HTTP_STATUSES.CREATED_201)
+    res.status(HTTP_STATUSES.CREATED_201).send(newUser)
 })
 
 userRoute.delete('/:id', authMiddleware, async (req: RequestWithParams<URIParamsUsersModel>, res: Response) => {

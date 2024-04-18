@@ -10,17 +10,23 @@ import { add } from "date-fns/add";
 
 export const authService = {
 
-    async getUserByEmail(email:string){
+    async ResendingCodeByEmail(email:string){
 
         const user = await UserRepository.getUserByEmail(email)
+        console.log(user)
 
-        if (!user)  return false
-    
-        if (user.isConfirmed) return false
-    
-        emailManager.sendConfirmationCode(user)
+        if (user) {
+            if (!user.isConfirmed) {
+                
+                await emailManager.sendConfirmationCode(user)
 
-        return true
+                return true
+            }
+            return false
+        }else{
+            return false
+        }
+    
     },
 
     async checkUniqueUser(loginOrEmail: string ) {
@@ -45,7 +51,7 @@ export const authService = {
                 hours: 1,
                 minutes: 30,
             }),
-            isConfirmed: true
+            isConfirmed: false
         }    
 
         const createUser = await UserRepository.createUser(newUser)
@@ -65,7 +71,9 @@ export const authService = {
         if (!user){
             return false
         }  
-    
+        // if(user.isConfirmed){
+        //     return false
+        // }
         if (user.confirmationCode === code && new Date() < user.expirationDate){
 
         await UserRepository.updateConfirm(user)

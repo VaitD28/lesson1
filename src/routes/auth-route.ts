@@ -67,6 +67,7 @@ authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<
 
 authRoute.post('/registration-confirmation', confirmCodeValidation, async (req: RequestWithBody<confirmModel>, res: Response) => {
     const confirm = await authService.confirmationCode(req.body.code)
+    
     if (!confirm) {
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
         return
@@ -78,8 +79,8 @@ authRoute.post('/registration-confirmation', confirmCodeValidation, async (req: 
 
 authRoute.post ('/registration-email-resending', resendingValidator,  async (req: RequestWithBody<resendingModel>, res: Response) => {
     
-    const user = await authService.getUserByEmail(req.body.email)
-
+    const user = await authService.ResendingCodeByEmail(req.body.email)
+    
     if (!user){
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
         return

@@ -2,9 +2,10 @@ import { UserRepository } from "../repositories/user-repository";
 import { UserDb } from "../user/UserDb";
 import { randomUUID } from "crypto";
 import { emailManager } from "../managers/email-manager";
-import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
 import { bcryptService } from "./bcrypt-service";
 import { add } from "date-fns/add";
+import { ResultStatus } from "../common/types/resultCode";
+import { Result } from "../common/types/result.type";
 
 
 
@@ -37,7 +38,7 @@ export const authService = {
         return true
     },
 
-    async registerUser(login: string, email: string, password: string) : Promise<UserDb | null>{
+    async registerUser(login: string, email: string, password: string) : Promise<Result<UserDb | null>>{
         
         const passwordHash = await bcryptService.generateHash(password)
         
@@ -56,43 +57,59 @@ export const authService = {
 
         const createUser = await UserRepository.createUser(newUser)
 
-        if(createUser){
-            await emailManager.sendConfirmationCode(createUser)
-
-        return newUser}
-
-        return null
+        try{
+            await emailManager.sendConfirmationCode(createUser!)
+            
+            }catch(e: unknown){
+                console.error('Send email error', e)
+            }
+            return {
+                status: ResultStatus.Success,
+                data: newUser
+            }
     },
 
-    async confirmationCode(code: string) : Promise<boolean | null>{
+    async confirmationCode(code: string) : Promise<Result<boolean | null>>{
         
         const user = await UserRepository.getUserByConfirmCode(code)
         
-        if (!user){
-            return false
-        }  
+        if (!user) return {
+            status: ResultStatus.BadRequest,
+            errorMessage: 'confirmation code is incorrect',
+            data: null
+        }
+        
         // if(user.isConfirmed){
         //     return false
         // }
         if (user.confirmationCode === code && new Date() < user.expirationDate){
-
+            //Зачем проверка на соответствие коду, если мы по нему искали?
         await UserRepository.updateConfirm(user)
-        return true
+        
+        return {
+            status: ResultStatus.Success,
+            data: null
         }
-        return false
+        }
+
+        return {
+            status: ResultStatus.BadRequest,
+            errorMessage: 'expirationDate was expired',
+            data: null
+        }
     },
 
-    async resendingCode(data: OutputUserType) : Promise<boolean | null>{
-
-        const user = await UserRepository.getUserById(data.id) 
+    async resendingCode(email: string) : Promise<boolean | null>{
         
-        if (!user) { return null} 
-            
+        const user = await UserRepository.getUserByEmail(email) 
+
+        if (!user){return false}
+
             const updateCode = await UserRepository.updateCode(user)
 
         if (!updateCode) { return null}
 
-            emailManager.sendConfirmationCode(user) 
+            await emailManager.sendConfirmationCode(updateCode) 
     
         return true
     }

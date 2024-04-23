@@ -1,5 +1,5 @@
 import { ObjectId} from "mongodb"
-import { blogsCollection, postsCollection } from "../db/db"
+import { db } from "../db/db"
 import { BlogUpdateModel } from "../models/blogs/inputBlogsModels/BlogUpdateModel"
 import { BlogDb } from "../blog/blog-db"
 import { QueryPostBlogInputModel} from "../models/posts/inputPostsModel/query.post.input.model"
@@ -10,7 +10,7 @@ import { postMapper } from "../mappers/postMapper"
 export const BlogRepository = {
 
     async getBlogById(id: string): Promise<BlogDb | null> {
-        const blog = await blogsCollection.findOne({_id : new ObjectId(id)})
+        const blog = await db.getCollections().blogsCollection.findOne({_id : new ObjectId(id)})
 
         if (!blog) {
             return null
@@ -20,7 +20,7 @@ export const BlogRepository = {
     },
     async createBlog(createData: BlogDb): Promise<string> {
 
-            const res = await blogsCollection.insertOne(createData)
+            const res = await db.getCollections().blogsCollection.insertOne(createData)
 
             return res.insertedId.toString()
 
@@ -29,7 +29,7 @@ export const BlogRepository = {
     
     async updateBlog (id: string, updateData: BlogUpdateModel): Promise<boolean>{
         try{
-            const res = await blogsCollection.updateOne({_id : new ObjectId(id)}, {
+            const res = await db.getCollections().blogsCollection.updateOne({_id : new ObjectId(id)}, {
                 $set:{
                     name:updateData.name,
                     description:updateData.description,
@@ -45,7 +45,7 @@ export const BlogRepository = {
 
     async deleteBlogById(id:string): Promise<boolean> {
         try{
-            const res= await blogsCollection.deleteOne({_id: new ObjectId(id)})
+            const res= await db.getCollections().blogsCollection.deleteOne({_id: new ObjectId(id)})
             
             return !!res.deletedCount
         }catch(e){
@@ -65,14 +65,14 @@ export const BlogRepository = {
 
         const {sortBy, sortDirection, pageNumber, pageSize} = sortData
         
-        const posts = await postsCollection
+        const posts = await db.getCollections().postsCollection
             .find({blogId: blogId})
             .sort(sortBy, sortDirection)
             .skip((pageNumber-1)*pageSize)
             .limit(pageSize)
             .toArray()
 
-        const totalCount = await postsCollection.countDocuments({blogId:blogId})
+        const totalCount = await db.getCollections().postsCollection.countDocuments({blogId:blogId})
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
             return {

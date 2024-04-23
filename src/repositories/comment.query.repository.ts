@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
-import { CommentDb } from "../comment/comment-db";
-import { commentsCollection } from "../db/db";
+import { db } from "../db/db";
 import { OutputCommentType } from "../models/comments/outputCommentModel/comment.output.models";
 import { commentMapper } from "../mappers/commentMapper";
 import { QueryPostCommentInputModel } from "../models/comments/inputCommentModel/query.comment.input.model";
@@ -8,7 +7,7 @@ import { QueryPostCommentInputModel } from "../models/comments/inputCommentModel
 export const CommentQueryRepository = {
     async getCommentById(id: string): Promise<OutputCommentType | null>{
         try {
-            const comment = await commentsCollection.findOne({_id : new ObjectId(id)})
+            const comment = await db.getCollections().commentsCollection.findOne({_id : new ObjectId(id)})
             
             if(!comment){
                 return null
@@ -33,14 +32,14 @@ export const CommentQueryRepository = {
         }   
         const {sortBy, sortDirection, pageNumber, pageSize} = sortData
         
-        const comments = await commentsCollection
+        const comments = await db.getCollections().commentsCollection
         .find({postId: postId})
         .sort(sortBy, sortDirection)
         .skip((pageNumber-1)*pageSize)
         .limit(pageSize)
         .toArray()
         
-        const totalCount = await commentsCollection.countDocuments({postId:postId})
+        const totalCount = await db.getCollections().commentsCollection.countDocuments({postId:postId})
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
             return {

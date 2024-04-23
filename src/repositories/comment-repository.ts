@@ -1,18 +1,18 @@
 import { CommentDb } from "../comment/comment-db"
-import { commentsCollection } from "../db/db"
+import { db } from "../db/db"
 import { ObjectId } from "mongodb";
 import { CommentUpdateModel } from "../models/comments/inputCommentModel/CommentUpdateModel";
 
 export const CommentRepository = {
 
     async createComment(newComment: CommentDb ){
-        const result = await commentsCollection.insertOne(newComment)
+        const result = await db.getCollections().commentsCollection.insertOne(newComment)
         return result.insertedId.toString()
     },
 
     async deleteCommentById(id: string){
         try{
-            const res= await commentsCollection.deleteOne({_id: new ObjectId(id)})
+            const res= await db.getCollections().commentsCollection.deleteOne({_id: new ObjectId(id)})
             
             return !!res.deletedCount
         }catch(e){
@@ -23,7 +23,7 @@ export const CommentRepository = {
 
     async updateCommentById(id: string, data: CommentUpdateModel){
         try{
-            const updateComment = await commentsCollection.updateOne({_id: new ObjectId(id)}, {
+            const updateComment = await db.getCollections().commentsCollection.updateOne({_id: new ObjectId(id)}, {
                 $set:{
                     content: data.content
                 }

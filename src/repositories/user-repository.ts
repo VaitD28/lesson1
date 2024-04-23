@@ -1,11 +1,12 @@
 import { ObjectId, WithId } from "mongodb";
-import { usersCollection } from "../db/db";
+import { db } from "../db/db";
 import { UserDb } from "../user/UserDb";
 import { QueryUsersInputModel } from "../models/users/inputUsersModel/QueryUsersInputModel";
 import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
 import { Pagination } from "../types/types";
 import { userMapper } from "../mappers/userMapper";
 import { randomUUID } from "crypto";
+import { add } from "date-fns/add";
 
 
 export const UserRepository = {
@@ -64,7 +65,7 @@ export const UserRepository = {
 
 
 
-        const Users = await usersCollection
+        const Users = await db.getCollections().usersCollection
         .find(filter)
         .sort(sortBy, sortDirection)
         .skip((pageNumber-1)*pageSize)
@@ -73,7 +74,7 @@ export const UserRepository = {
         
 
         
-        const totalCount = await usersCollection.countDocuments(filter)
+        const totalCount = await db.getCollections().usersCollection.countDocuments(filter)
 
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
@@ -88,23 +89,23 @@ export const UserRepository = {
     },
 
     async getUserById(id:string){
-        const user = await usersCollection.findOne({_id: new ObjectId(id)})
+        const user = await db.getCollections().usersCollection.findOne({_id: new ObjectId(id)})
         return user
     },
     async createUser(data: UserDb) {
-        const user = await usersCollection.insertOne(data)
-        return await usersCollection.findOne ({_id: new ObjectId(user.insertedId.toString())})
+        const user = await db.getCollections().usersCollection.insertOne(data)
+        return await db.getCollections().usersCollection.findOne ({_id: new ObjectId(user.insertedId.toString())})
 
     },
 
     async findByLoginOrEmail(loginOrEmail: string){
-        const user = await usersCollection.findOne({$or: [{login: loginOrEmail},{email:loginOrEmail}]})
+        const user = await db.getCollections().usersCollection.findOne({$or: [{login: loginOrEmail},{email:loginOrEmail}]})
         return user
     },
 
     async deleteUserById(id: string): Promise<boolean> {
         try{
-            const user = await usersCollection.deleteOne({_id: new ObjectId(id)})
+            const user = await db.getCollections().usersCollection.deleteOne({_id: new ObjectId(id)})
             return !!user.deletedCount
         }catch(e){
             return false}
@@ -112,11 +113,11 @@ export const UserRepository = {
     
     async getUserByLoginOrEmail(loginOrEmail:string) {
 
-        const findUserByLogin = await usersCollection.findOne({login:loginOrEmail})
+        const findUserByLogin = await db.getCollections().usersCollection.findOne({login:loginOrEmail})
         if(findUserByLogin){
             return findUserByLogin
         }else{
-            const findUserByEmail = await usersCollection.findOne({email:loginOrEmail})
+            const findUserByEmail = await db.getCollections().usersCollection.findOne({email:loginOrEmail})
                 if(findUserByEmail){
                     return findUserByEmail
                 }else{
@@ -126,7 +127,8 @@ export const UserRepository = {
     },
 
     async getUserByConfirmCode(code: string){ 
-        const user = await usersCollection.findOne({confirmationCode: code})
+        const user = await db.getCollections().usersCollection.findOne({confirmationCode: code})
+        console.log(user)
         if (user){
             return  user
         }else{
@@ -136,7 +138,7 @@ export const UserRepository = {
 
 
     async getUserByEmail(email: string){ 
-        const user = await usersCollection.findOne({email: email})
+        const user = await db.getCollections().usersCollection.findOne({email: email})
         if (user){
             return  user
         }else{
@@ -144,7 +146,7 @@ export const UserRepository = {
     },
 
     async updateConfirm(user: WithId<UserDb>){
-        const res = await usersCollection.updateOne({_id: user._id}, {
+        const res = await db.getCollections().usersCollection.updateOne({_id: user._id}, {
             $set: {
                 isConfirmed: true
             }
@@ -155,16 +157,17 @@ export const UserRepository = {
 
     async updateCode(user: WithId<UserDb>){
         
-        const createdAt = new Date()
-        const confirmationCodeExpirationDate = createdAt.setHours(createdAt.getHours() + 2)
-
-        const res = await usersCollection.updateOne({_id: user._id}, {
+        const res = await db.getCollections().usersCollection.updateOne({_id: user._id}, {
             $set: {
                 confirmationCode: randomUUID(),
-                confirmationCodeExpirationDate: confirmationCodeExpirationDate.toString()
+                expirationDate: add(new Date(), {
+                    hours: 1,
+                    minutes: 30,
+                }),
             }
         })
+        console.log(res)
 
-        return !!res.matchedCount
+        return await db.getCollections().usersCollection.findOne(user._id)
     }
 }

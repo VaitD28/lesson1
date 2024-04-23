@@ -1,5 +1,5 @@
 import { OutputPostType } from "../models/posts/outputPostsModel/post.output.model"
-import { postsCollection } from "../db/db"
+import { db } from "../db/db"
 import { postMapper } from "../mappers/postMapper"
 import { ObjectId } from "mongodb"
 import { QueryPostBlogInputModel } from "../models/posts/inputPostsModel/query.post.input.model"
@@ -14,14 +14,14 @@ export const PostQueryRepository = {
             const pageSize= sortData.pageSize ? +sortData.pageSize : 10
         
         
-        const posts = await postsCollection
+        const posts = await db.getCollections().postsCollection
             .find({})
             .sort(sortBy, sortDirection)
             .skip((pageNumber-1)*pageSize)
             .limit(pageSize)
             .toArray()
 
-            const totalCount = await postsCollection.countDocuments({})
+            const totalCount = await db.getCollections().postsCollection.countDocuments({})
             const pagesCount = Math.ceil(totalCount / +pageSize)
             return {
                 pageSize,
@@ -34,7 +34,7 @@ export const PostQueryRepository = {
 
     async getPostById(id:string): Promise<OutputPostType | null> {
         try{
-            const post =await postsCollection.findOne({_id : new ObjectId(id)})
+            const post =await db.getCollections().postsCollection.findOne({_id : new ObjectId(id)})
         
             if (!post){
                 return null

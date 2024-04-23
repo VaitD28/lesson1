@@ -1,0 +1,16 @@
+{
+    "moduleFileExtensions": [
+        "js",
+        "json",
+        "ts"
+    ],
+    "rootDir": ".",
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testTimeOut": 100000,
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"],
+    "testRegex": ".int.test.ts$",
+    // "modulePaths": [
+    //     "<rootDir>"
+    // ]
+}

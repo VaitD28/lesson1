@@ -8,6 +8,7 @@ export const confirmCodeValidation = [
     .withMessage('Incorrect code')
     .custom(async code => {
         const user = await UserRepository.getUserByConfirmCode(code)
+        console.log(user)
         if(user){
             if (user.isConfirmed) {
                 throw new Error('Email already confirmed')

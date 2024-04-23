@@ -12,6 +12,7 @@ import { authService } from "../domain/auth-service";
 import { confirmModel } from "../middlewares/auth/confirmationModel";
 import { resendingValidator } from "../validators/resending-validator";
 import { resendingModel } from "../middlewares/auth/resendingModel";
+import { ResultStatus } from "../common/types/resultCode";
 
 
 
@@ -61,8 +62,11 @@ authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<
     }
 
 
-    return res.status(HTTP_STATUSES.NO_CONTENT_204).send('Input data is accepted. Email with confirmation code will be send to passed email address')
+    //return res.status(HTTP_STATUSES.NO_CONTENT_204).send('Input data is accepted. Email with confirmation code will be send to passed email address')
     
+    const result = await authService.registerUser(req.body.login, req.body.email, req.body.password)
+    if (result.status === ResultStatus.Success) return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+     
 })
 
 authRoute.post('/registration-confirmation', confirmCodeValidation, async (req: RequestWithBody<confirmModel>, res: Response) => {

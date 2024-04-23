@@ -1,5 +1,5 @@
 import { ObjectId} from "mongodb"
-import { blogsCollection } from "../db/db"
+import { db } from "../db/db"
 import { blogMapper } from "../mappers/blogMapper"
 import { OutputBlogType } from "../models/blogs/outputBlogsModels/blog.output.models"
 import { QueryBlogInputModel } from "../models/blogs/inputBlogsModels/query.blog.input.model"
@@ -28,14 +28,14 @@ export const BlogQueryRepository = {
         }
         console.log(filter)
         
-            const blogs = await blogsCollection
+            const blogs = await db.getCollections().blogsCollection
             .find(filter)
             .sort(sortBy, sortDirection)
             .skip((pageNumber-1)*pageSize)
             .limit(pageSize)
             .toArray()
 
-            const totalCount = await blogsCollection.countDocuments(filter)
+            const totalCount = await db.getCollections().blogsCollection.countDocuments(filter)
             const pagesCount = Math.ceil(totalCount / +pageSize)
             return {
                 pageSize,
@@ -50,7 +50,7 @@ export const BlogQueryRepository = {
     async getBlogById(id: string): Promise<OutputBlogType | null> {
 
         try{
-            const blog = await blogsCollection.findOne({_id : new ObjectId(id)})
+            const blog = await db.getCollections().blogsCollection.findOne({_id : new ObjectId(id)})
 
             if (!blog) {
                 return null

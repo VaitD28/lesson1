@@ -16,7 +16,6 @@ import { CommentPostModel } from '../models/comments/inputCommentModel/CommentsI
 import { CommentService } from '../domain/comment-service'
 import { commentsValidator } from '../validators/comments-validator'
 import { CommentQueryRepository } from '../repositories/comment.query.repository'
-import { CommentRepository } from '../repositories/comment-repository'
 import { QueryPostCommentInputModel } from '../models/comments/inputCommentModel/query.comment.input.model'
 
 export const postRoute = Router({})

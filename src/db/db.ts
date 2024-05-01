@@ -4,13 +4,17 @@ import { Db, MongoClient } from 'mongodb'
 import { BlogDb } from '../blog/blog-db'
 import { PostDb } from '../post/post-db'
 import { UserDb } from '../user/UserDb'
-import {CommentDb} from '../comment/comment-db'
+import {CommentDb} from '../comment/comment-db'  
+import {TokenDb} from '../token/token-db'  
 dotenv.config()
 
 export const appConfig = {
 port : 80,
-JWT_SECRET : process.env.JWT_SECRET || "123",
-url : process.env.MONGO_URL || "mongodb://0.0.0.0:27017"
+JWT_SECRET_ACC : process.env.JWT_SECRET_ACC || "123",
+JWT_SECRET_REF : process.env.JWT_SECRET_ACC || "124",
+url : process.env.MONGO_URL || "mongodb://0.0.0.0:27017",
+accessTokenLife: 10,
+refreshTokenLife: 20
 }
 
 // export const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017"
@@ -86,7 +90,8 @@ export const db = {
             blogsCollection : this.getDbName().collection<BlogDb>('blogs'),
             postsCollection : this.getDbName().collection<PostDb>('posts'),
             usersCollection: this.getDbName().collection<UserDb>('users'),
-            commentsCollection : this.getDbName().collection<CommentDb>('comments')
+            commentsCollection : this.getDbName().collection<CommentDb>('comments'),
+            tokenBlackListCollection : this.getDbName().collection<TokenDb>('token')
 
         }
     }

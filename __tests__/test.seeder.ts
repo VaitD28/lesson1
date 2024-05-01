@@ -2,14 +2,27 @@ import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
 import { UserDb } from "../src/user/UserDb";
 import { db } from "../src/db/db";
+import { WithId } from "mongodb";
+import { Result } from "../src/common/types/result.type";
 type RegisterUserType = {
     login: string, 
     email: string,
     password: string,
-    createdAt: string,
+    createdAt?: string,
     code?: string,
     expirationDate? : Date,
     isConfirmed? : boolean
+}
+
+type IUserService = {
+    id: string,
+    login: string,
+    email: string,
+    passwordHash: string,
+    createdAt: string,
+    confirmationCode: string,
+    expirationDate: Date,
+    isConfirmed: boolean,
 }
 
 export const testSeeder = {
@@ -19,6 +32,19 @@ export const testSeeder = {
             email: 'test@gmail.com',
             password: '123456789'
         }
+    },
+
+    userForSendEmail(){
+        const user = {
+                login:'testing',
+                email: 'test@gmail.com',
+                passwordHash: 'string',
+                createdAt: 'string',
+                confirmationCode: 'string',
+                expirationDate: new Date() ,
+                isConfirmed: false 
+            }
+        return user
     },
 
     createUserDtos(count: number) {
@@ -43,7 +69,7 @@ export const testSeeder = {
             expirationDate,
             isConfirmed
         }: RegisterUserType
-    ): Promise<UserDb> {
+    ): Promise<IUserService> {
         const newUser: UserDb = {
             login,
             email,
@@ -60,7 +86,7 @@ export const testSeeder = {
 
     const res = await db.getCollections().usersCollection.insertOne({...newUser})
     return {
-        id: res.insertId.toString(),
+        id: res.insertedId.toString(),
         ...newUser
     }
 }

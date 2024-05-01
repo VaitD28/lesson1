@@ -6,29 +6,12 @@ import { bcryptService } from "./bcrypt-service";
 import { add } from "date-fns/add";
 import { ResultStatus } from "../common/types/resultCode";
 import { Result } from "../common/types/result.type";
+import { jwtService } from "../application/jwt.service";
+import { appConfig } from "../db/db";
 
 
 
 export const authService = {
-
-    async ResendingCodeByEmail(email:string){
-
-        const user = await UserRepository.getUserByEmail(email)
-        console.log(user)
-
-        if (user) {
-            if (!user.isConfirmed) {
-                
-                await emailManager.sendConfirmationCode(user)
-
-                return true
-            }
-            return false
-        }else{
-            return false
-        }
-    
-    },
 
     async checkUniqueUser(loginOrEmail: string ) {
         const user = await UserRepository.getUserByLoginOrEmail(loginOrEmail);
@@ -54,9 +37,9 @@ export const authService = {
             }),
             isConfirmed: false
         }    
-
+        console.log(newUser)
         const createUser = await UserRepository.createUser(newUser)
-
+        console.log(createUser, 'createUser')
         try{
             await emailManager.sendConfirmationCode(createUser!)
             
@@ -65,31 +48,22 @@ export const authService = {
             }
             return {
                 status: ResultStatus.Success,
-                data: newUser
+                data: createUser
             }
     },
 
     async confirmationCode(code: string) : Promise<Result<boolean | null>>{
         
         const user = await UserRepository.getUserByConfirmCode(code)
-        
-        if (!user) return {
-            status: ResultStatus.BadRequest,
-            errorMessage: 'confirmation code is incorrect',
-            data: null
-        }
-        
-        // if(user.isConfirmed){
-        //     return false
-        // }
-        if (user.confirmationCode === code && new Date() < user.expirationDate){
-            //Зачем проверка на соответствие коду, если мы по нему искали?
-        await UserRepository.updateConfirm(user)
-        
-        return {
-            status: ResultStatus.Success,
-            data: null
-        }
+
+        if (new Date() < user!.expirationDate){
+            const isUpdate = await UserRepository.updateIsConfirm(user!)
+            if(isUpdate){
+                return {
+                status: ResultStatus.Success,
+                data: null
+                }
+            }
         }
 
         return {
@@ -99,24 +73,54 @@ export const authService = {
         }
     },
 
-    async resendingCode(email: string) : Promise<boolean | null>{
+    async resendingCode(email: string){
         
         const user = await UserRepository.getUserByEmail(email) 
 
-        if (!user){return false}
-
-            const updateCode = await UserRepository.updateCode(user)
-
-        if (!updateCode) { return null}
-
-            await emailManager.sendConfirmationCode(updateCode) 
+        const updateCode = await UserRepository.updateCode(user!)
+        
+        await emailManager.sendConfirmationCode(updateCode!) 
     
-        return true
+        return {
+            status: ResultStatus.Success,
+            errorMessage: 'ConfirmationCode was sent',
+            data: null
+        }},
+
+    async updateToken(refreshToken: string){
+
+        const user = await jwtService.getUserByREFToken(refreshToken)
+
+
+        if (user) {
+    
+            await jwtService.forBlackList(refreshToken)
+    
+            const newAccessToken = await jwtService.CreateJWT(user, appConfig.accessTokenLife, appConfig.JWT_SECRET_ACC)
+    
+            const newRefreshToken = await jwtService.CreateJWT(user, appConfig.refreshTokenLife, appConfig.JWT_SECRET_REF)
+    
+            const accToken = {
+            "accessToken": newAccessToken
+            }
+
+            const tokens =  {
+                accToken,
+                newRefreshToken
+            } 
+
+            return tokens
+        }
+
+        return false
+    },
+
+    async TokenInBlackList(refreshToken: string){
+            const insertOnBlackList = await jwtService.forBlackList(refreshToken)
+            if(insertOnBlackList){
+                return true
+            }
+            return false
     }
+
 }
-
-
-
-
-
-

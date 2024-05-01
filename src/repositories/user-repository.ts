@@ -4,7 +4,7 @@ import { UserDb } from "../user/UserDb";
 import { QueryUsersInputModel } from "../models/users/inputUsersModel/QueryUsersInputModel";
 import { OutputUserType } from "../models/users/outputUserModel.ts/OutputUserModel";
 import { Pagination } from "../types/types";
-import { userMapper } from "../mappers/userMapper";
+import { userMapper, userMapperAllInf } from "../mappers/userMapper";
 import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
 
@@ -128,36 +128,34 @@ export const UserRepository = {
 
     async getUserByConfirmCode(code: string){ 
         const user = await db.getCollections().usersCollection.findOne({confirmationCode: code})
-        console.log(user)
         if (user){
-            return  user
+            return  userMapperAllInf(user)
         }else{
-            return false}
-
+            return null}
     },
 
 
     async getUserByEmail(email: string){ 
         const user = await db.getCollections().usersCollection.findOne({email: email})
         if (user){
-            return  user
+            return  userMapperAllInf(user)
         }else{
-            return false}
+            return null}
     },
 
-    async updateConfirm(user: WithId<UserDb>){
-        const res = await db.getCollections().usersCollection.updateOne({_id: user._id}, {
+    async updateIsConfirm(user: OutputUserType){
+        const res = await db.getCollections().usersCollection.updateOne({_id : new ObjectId(user.id)}, {
             $set: {
                 isConfirmed: true
             }
         })
-
+        
         return !!res.matchedCount
     },
 
-    async updateCode(user: WithId<UserDb>){
-        
-        const res = await db.getCollections().usersCollection.updateOne({_id: user._id}, {
+    async updateCode(user: OutputUserType){
+        console.log(user, 'user')
+        const res = await db.getCollections().usersCollection.updateOne({_id : new ObjectId(user.id)}, {
             $set: {
                 confirmationCode: randomUUID(),
                 expirationDate: add(new Date(), {
@@ -166,8 +164,10 @@ export const UserRepository = {
                 }),
             }
         })
-        console.log(res)
+        
 
-        return await db.getCollections().usersCollection.findOne(user._id)
-    }
+    const newUser = await db.getCollections().usersCollection.findOne({_id : new ObjectId(user.id)})
+    console.log(newUser, 'UpdateUser')
+    return newUser
+     }
 }

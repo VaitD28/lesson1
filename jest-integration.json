@@ -9,8 +9,5 @@
     "testEnvironment": "node",
     "testTimeOut": 100000,
     "modulePathIgnorePatterns": ["<rootDir>/dist/"],
-    "testRegex": ".int.test.ts$",
-    // "modulePaths": [
-    //     "<rootDir>"
-    // ]
+    "testRegex": ".int.test.ts$"
 }

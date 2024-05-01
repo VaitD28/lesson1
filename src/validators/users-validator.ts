@@ -1,7 +1,6 @@
 import { body } from "express-validator";
 import { inputModelValidation, inputModelValidationForLogin } from "../middlewares/inputModel/input-model-validation";
 import { authService } from "../domain/auth-service";
-import { UserService } from "../domain/user-service";
 
 export const userLogValidation = [   
     body('loginOrEmail')

@@ -6,6 +6,7 @@ import { testRoute } from './routes/test-route';
 import { userRoute } from './routes/user-route';
 import { authRoute } from './routes/auth-route';
 import { commentRoute } from './routes/comment-route';
+import cookieParser from 'cookie-parser';
 
 
 export const app = express()
@@ -19,7 +20,7 @@ export const RouterPaths = {
     comments: '/comments'
 }
 app.use(express.json())
-
+app.use(cookieParser())
 
 
 app.use(RouterPaths.videos, videoRoute)

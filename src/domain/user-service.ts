@@ -21,6 +21,13 @@ export const UserService = {
         if (!user) return null
         return userMapper(user)
     },
+
+    
+    async getUserByIdforRefresh (id: string){
+        const user = await UserRepository.getUserById(id)
+        if (!user) return null
+        return user
+    },
     
     async createUser(login: string, email: string, password: string): Promise< OutputUserType | null>{
         

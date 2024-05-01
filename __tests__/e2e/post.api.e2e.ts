@@ -3,8 +3,7 @@ import { RouterPaths, app } from '../../src/settings'
 import { HTTP_STATUSES } from '../../src/statuses'
 import { PostCreateModel } from '../../src/models/posts/inputPostsModel/PostCreateModel'
 import { postsTestManager } from './utils/postsTestManager'
-import { blogsTestManager } from './utils/blogsTestManager'
-import { BlogCreateModel } from '../../src/models/blogs/inputBlogsModels/BlogCreateModel'
+
 const {OK_200,
     CREATED_201,
     NO_CONTENT_204,

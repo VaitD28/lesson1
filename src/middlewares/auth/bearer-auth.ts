@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../../application/jwt.service";
 import { UserService } from "../../domain/user-service";
 import { HTTP_STATUSES } from "../../statuses";
+import { appConfig } from "../../db/db";
 
 export const bearerAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization){
@@ -11,7 +12,7 @@ export const bearerAuthMiddleware = async (req: Request, res: Response, next: Ne
 
     const token = req.headers.authorization.split(' ')[1]
 
-    const userId = await jwtService.getUserIdByToken(token)
+    const userId = await jwtService.getUserIdByACCToken(token)
 
     if(!userId) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)

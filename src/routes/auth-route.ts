@@ -13,6 +13,8 @@ import { confirmModel } from "../middlewares/auth/confirmationModel";
 import { resendingValidator } from "../validators/resending-validator";
 import { resendingModel } from "../middlewares/auth/resendingModel";
 import { ResultStatus } from "../common/types/resultCode";
+import { appConfig } from "../db/db";
+import { UserRepository } from "../repositories/user-repository";
 
 
 
@@ -26,13 +28,17 @@ authRoute.post('/login', userLogValidation, async (req: RequestWithBody<LoginMod
 
     if (checkUser){
         
-    const token = await jwtService.CreateJWT(checkUser)
+    const accessToken = await jwtService.CreateJWT(checkUser, appConfig.accessTokenLife, appConfig.JWT_SECRET_ACC)
 
-    const accessToken = {
-        "accessToken": token 
+    const refreshToken = await jwtService.CreateJWT(checkUser, appConfig.refreshTokenLife, appConfig.JWT_SECRET_REF)
+
+    const accToken = {
+        "accessToken": accessToken
     }
 
-    return res.status(HTTP_STATUSES.OK_200).send(accessToken)
+    res.cookie('refreshToken', refreshToken, {httpOnly: true,secure: true})
+    res.status(HTTP_STATUSES.OK_200).send(accToken)
+    return
 
     }else{
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
@@ -41,54 +47,92 @@ authRoute.post('/login', userLogValidation, async (req: RequestWithBody<LoginMod
 })
 
 authRoute.get('/me', bearerAuthMiddleware, async (req: Request, res: Response) => {
-    const user = {
-        "email": req.user!.email,
-        "login": req.user!.login,
-        "userId": req.user!.id
-    }  
+    // const user = {
+    //     "email": req.user!.email,
+    //     "login": req.user!.login,
+    //     "userId": req.user!.id
+    // }  
     
-    res.status(HTTP_STATUSES.OK_200).send(user)
+    // res.status(HTTP_STATUSES.OK_200).send(user)
+    const token = req.cookies.accessToken
+    const userId = await jwtService.getUserIdByACCToken(token)
+    const user = await UserRepository.getUserById(userId)
 
+    const userInf = {
+        "email": user!.email,
+        "login": user!.login,
+        "userId": userId
+    }
 
+    return res.status(HTTP_STATUSES.OK_200).send(userInf)
 })
 
 authRoute.post('/registration', userPostValidation, async (req: RequestWithBody<RegistrationModel>, res:Response) => {
-
-    const newUser = await authService.registerUser(req.body.login, req.body.email, req.body.password)
-
-    if (!newUser){ 
-        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
-        return
-    }
-
-
-    //return res.status(HTTP_STATUSES.NO_CONTENT_204).send('Input data is accepted. Email with confirmation code will be send to passed email address')
-    
+    console.log(req.body.login, req.body.email, req.body.password, 'dataReg')
     const result = await authService.registerUser(req.body.login, req.body.email, req.body.password)
-    if (result.status === ResultStatus.Success) return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-     
+    
+    if (result.status === ResultStatus.Success) {
+        
+        return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    
+    }else{
+        
+        return res.status(HTTP_STATUSES.BAD_REQUEST_400).send(result.errorMessage)
+    }
+    
 })
 
 authRoute.post('/registration-confirmation', confirmCodeValidation, async (req: RequestWithBody<confirmModel>, res: Response) => {
-    const confirm = await authService.confirmationCode(req.body.code)
+    const result = await authService.confirmationCode(req.body.code)
     
-    if (!confirm) {
-        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
-        return
+    if (result.status === ResultStatus.Success) {
+        return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    
+    }else{
+        
+        return res.status(HTTP_STATUSES.BAD_REQUEST_400).send(result.errorMessage)
     }
-
-    return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-
 })
 
 authRoute.post ('/registration-email-resending', resendingValidator,  async (req: RequestWithBody<resendingModel>, res: Response) => {
     
-    const user = await authService.ResendingCodeByEmail(req.body.email)
+    const result = await authService.resendingCode(req.body.email)
     
-    if (!user){
-        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+    if (result.status === ResultStatus.Success) {
+        return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    
+    }else{
+        
+        return res.status(HTTP_STATUSES.BAD_REQUEST_400).send(result.errorMessage)
+    }
+})
+
+authRoute.post ('/refresh-token', async (req: Request , res: Response) => {
+
+    const refreshToken = req.cookies.refreshToken
+  
+    const tokens = await authService.updateToken(refreshToken)
+    console.log(tokens)
+    if (!tokens){
+        return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+    }
+
+    const accToken = tokens.accToken
+    const newRefreshToken = tokens.newRefreshToken
+
+        res.cookie('refreshToken', newRefreshToken, {httpOnly: true,secure: true})
+        res.status(HTTP_STATUSES.OK_200).send(accToken)
+        return
+})
+
+authRoute.post ('/logout', async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken
+    const token = await authService.TokenInBlackList(refreshToken)
+    if (!token) {
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        return
+    }else{
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         return
     }
-    
-    return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
